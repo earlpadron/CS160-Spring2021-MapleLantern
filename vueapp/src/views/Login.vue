@@ -22,15 +22,14 @@ export default {
   },
   methods: {
     login: function() {
-      this.$router.replace('/home');
-      firebase.auth().signInWithEmailAndPassword(this.email, this.password).then(
-        function(data) {
-          alert('You are now connected!');
-        },
-        function(err) {
-          alert('There has been an error in logging you in. ' + err.message);
-        }
-      )
+      firebase.auth().signInWithEmailAndPassword(this.email, this.password)
+      .then(() => {
+            this.$router.push('/home')
+            alert('You are now connected!')
+        })
+        .catch((error) => {
+          alert(error.message);
+        });
     }
   }
 }

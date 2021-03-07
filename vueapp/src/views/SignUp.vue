@@ -22,14 +22,14 @@ export default {
   },
   methods: {
     signUp: function() {
-      firebase.auth().createUserWithEmailAndPassword(this.email, this.password).then(
-        function (data) {
-          alert(data.user.email + ' Your account has been created!');
-        },
-        function(err) {
-          alert('There was an error in creating your account: ' + err.message);
-        }
-      );
+      firebase.auth().createUserWithEmailAndPassword(this.email, this.password)
+      .then(() => {
+            this.$router.push('/home')
+            alert('Your account has been created!')
+        })
+        .catch((error) => {
+          alert(error.message);
+        });
     }
   }
 }
