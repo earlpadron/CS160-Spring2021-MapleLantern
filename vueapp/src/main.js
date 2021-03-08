@@ -5,6 +5,7 @@ import router from './router'
 import firebase from 'firebase/app';
 import "firebase/firestore";
 import "firebase/auth"
+import vuetify from './plugins/vuetify';
 
 Vue.config.productionTip = false
 
@@ -26,5 +27,6 @@ firebase.analytics();
 new Vue({
   el: "#app",
   router: router,
-  render: h => h(App),
+  vuetify,
+  render: h => h(App)
 }).$mount('#app')

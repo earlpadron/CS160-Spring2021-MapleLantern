@@ -1,23 +1,68 @@
 <template>
   <div class="sign-up">
-    <h3>Sign Up</h3>
-    <!-- <form id='login-form' v-on:submit.prevent='auth' -->
-    <input type='text' placeholder="Email" v-model="email"><br>
-    <input type='text' placeholder="Password" v-model="password"><br>
-    <button @click="signUp">Sign Up</button>
-    <span>Head back to <router-link to='/login'>login</router-link>.</span>
+    <v-container></v-container>
+    <v-container></v-container>
+    <v-container>
+      <v-card
+        class="mx-auto"
+        max-width="500"
+      >
+        <v-form
+        class="pa-5"
+        ref="form"
+        v-model="valid"
+        lazy-validation
+        >
+          <v-text-field
+            v-model="name"
+            :error-messages="errors"
+            label="Name"
+            required
+          ></v-text-field>
+
+          <v-text-field
+            v-model="email"
+            :error-messages="errors"
+            label="E-mail"
+            required
+          ></v-text-field>
+
+          <v-text-field
+            v-model="password"
+            :rules="passwordRules"
+            label="Password"
+            required
+          ></v-text-field>
+
+          <v-btn
+            :disabled="!valid"
+            color="success"
+            class="mr-4"
+            @click="signUp()"
+          >
+            Sign-up
+          </v-btn>
+
+          <p> Head back to <router-link to='/login'> login</router-link>.</p>
+        </v-form>
+      </v-card>
+    </v-container>
   </div>
+  
 </template>
 
 <script>
+
 import firebase from 'firebase/app';
+import CryptoJS from 'crypto-js'
 
 export default {
   mane: 'signUp',
   data() {
     return {
       email: "",
-      password:""
+      password:"",
+      name:""
     };
   },
   methods: {

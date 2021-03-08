@@ -1,16 +1,52 @@
 <template>
   <div class="login">
-    <h3>Log in</h3>
-    <!-- <form id='login-form' v-on:submit.prevent='auth' -->
-    <input type='text' placeholder="Email" v-model="email"><br>
-    <input type='text' placeholder="Password" v-model="password"><br>
-    <button @click="login">Submit</button>
-    <p> Don't have an account? You can <router-link to='/sign-up'> create one</router-link>.</p>
+    <v-container></v-container>
+    <v-container></v-container>
+    <v-container>
+      <v-card
+        class="mx-auto"
+        max-width="500"
+      >
+        <v-form
+        class="pa-5"
+        ref="form"
+        v-model="valid"
+        lazy-validation
+        >
+
+          <v-text-field
+            v-model="email"
+            :rules="emailRules"
+            label="E-mail"
+            required
+          ></v-text-field>
+
+          <v-text-field
+            v-model="password"
+            :rules="passwordRules"
+            label="Password"
+            required
+          ></v-text-field>
+
+          <v-btn
+            :disabled="!valid"
+            color="success"
+            class="mr-4"
+            @click="login()"
+          >
+            Login
+          </v-btn>
+
+          <p> Don't have an account? You can <router-link to='/sign-up'> create one</router-link>.</p>
+        </v-form>
+      </v-card>
+    </v-container>
   </div>
 </template>
 
 <script>
 import firebase from 'firebase';
+import CryptoJS from 'crypto-js'
 
 export default {
   mane: 'login',
