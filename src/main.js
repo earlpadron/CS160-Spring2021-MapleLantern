@@ -6,12 +6,12 @@ import firebase from 'firebase/app';
 import "firebase/firestore";
 import "firebase/auth"
 import vuetify from './plugins/vuetify';
-import Amplify from 'aws-amplify';
-import aws_exports from './aws-exports';
-import {
-  applyPolyfills,
-  defineCustomElements,
-} from '@aws-amplify/ui-components/loader';
+// import Amplify from 'aws-amplify';
+// import aws_exports from './aws-exports';
+// import {
+//   applyPolyfills,
+//   defineCustomElements,
+// } from '@aws-amplify/ui-components/loader';
 
 Vue.config.productionTip = false
 
@@ -37,7 +37,7 @@ new Vue({
   render: h => h(App)
 }).$mount('#app')
 
-Amplify.configure(aws_exports);
-applyPolyfills().then(() => {
-  defineCustomElements(window);
-});
+// Amplify.configure(aws_exports);
+// applyPolyfills().then(() => {
+//   defineCustomElements(window);
+// });
