@@ -34,9 +34,3 @@ npm run lint
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
 
-Division of work for Sprint 2:
-Earl: create a web page where users can pay for tokens
-Prerana: create a webpage that allows service providers to add new events
-Sumija: make home page buttons clickable to other pages
-Xinru: set up a connection to a database that stores activities
-
