@@ -25,6 +25,9 @@
             v-model="password"
             :rules="passwordRules"
             label="Password"
+            :append-icon="pvisvalue ? 'mdi-eye' : 'mdi-eye-off'"
+            @click:append="() => (pvisvalue = !pvisvalue)"
+            :type="pvisvalue ? 'password' : 'text'"
             required
           ></v-text-field>
 
@@ -53,7 +56,8 @@ export default {
   data() {
     return {
       email:"",
-      password:""
+      password:"",
+      pvisvalue: String
     };
   },
   methods: {
