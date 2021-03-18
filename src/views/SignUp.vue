@@ -57,7 +57,10 @@
 <script>
 
 import firebase from 'firebase/app';
-import CryptoJS from 'crypto-js'
+// import firebase from 'firebase/';
+
+// import CryptoJS from 'crypto-js
+// const db = firebase.firestore();
 
 export default {
   mane: 'signUp',
@@ -70,6 +73,9 @@ export default {
     };
   },
   methods: {
+    createUser: function(email, name) {
+      
+    },
     signUp: function() {
       firebase.auth().createUserWithEmailAndPassword(this.email, this.password)
       .then(() => {

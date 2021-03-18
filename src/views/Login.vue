@@ -49,7 +49,7 @@
 
 <script>
 import firebase from 'firebase';
-import CryptoJS from 'crypto-js'
+// import CryptoJS from 'crypto-js';
 
 export default {
   mane: 'login',
