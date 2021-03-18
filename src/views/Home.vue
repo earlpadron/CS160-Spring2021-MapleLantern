@@ -108,10 +108,8 @@ export default {
             })
         },
         post: function() {
-            firebase.auth().signOut().then(() => {
-                this.$router.replace('/post')
-                alert('Redirecting to post creation page')
-            })
+            this.$router.replace('/post')
+            alert('Redirecting to post creation page')
         }
     }
 }
