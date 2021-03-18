@@ -83,7 +83,7 @@
             :disabled="!valid"
             color="success"
             class="mr-4"
-            @click="login()"
+            @click="post()"
           >
             Post
           </v-btn>
@@ -94,6 +94,8 @@
 </template>
 
 <script>
+import firebase from "firebase";
+
   export default {
     data() {
       return {
@@ -111,5 +113,11 @@
         // return this.fromDateVal ? this.formatDate(this.fromDateVal) : "";
       },
     },
+    methos: {
+      post: function(){
+        const db = firebase.firestore();
+        // db.collection('Activities').
+      }
+    }
   };
 </script>
