@@ -5,6 +5,16 @@
         <button @click="logout"> Log out </button>
       </v-container>
 
+      <v-container>
+        <v-btn
+            color="success"
+            class="mr-4"
+            @click="post()"
+          >
+            Create A Post
+          </v-btn>
+      </v-container>
+
       <v-app id="inspire">
         <v-app-bar
           app
@@ -95,6 +105,12 @@ export default {
             firebase.auth().signOut().then(() => {
                 this.$router.replace('login')
                 alert('You are signed out')
+            })
+        },
+        post: function() {
+            firebase.auth().signOut().then(() => {
+                this.$router.replace('/post')
+                alert('Redirecting to post creation page')
             })
         }
     }
