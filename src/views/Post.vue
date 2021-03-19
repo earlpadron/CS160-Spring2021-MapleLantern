@@ -95,6 +95,7 @@
 
 <script>
 import firebase from "firebase";
+import Login from './Login.vue';
 
   export default {
     data() {
@@ -113,10 +114,32 @@ import firebase from "firebase";
         // return this.fromDateVal ? this.formatDate(this.fromDateVal) : "";
       },
     },
-    methos: {
-      post: function(){
+    methods: {
+      post: async function(){
         const db = firebase.firestore();
-        // db.collection('Activities').
+        const email = this.$store._modules.root.state.email;
+        console.log(email);
+
+        const data = await db.collection('ServiceProviders').where("email", "==", 'aaaaa@mail.com').get();
+        const docIF = data.docs[0].id;
+        console.log(docIF);
+        const user = "/ServiceProivders/"+docIF;
+
+        // db.collection('Activities').add({
+        //   ageGroup:"",
+        //   approved: false,
+        //   category: [],
+        //   cost:0,
+        //   datePosted:,
+        //   eventDate:,
+        //   name:"",
+        //   provider: user
+        // }). then(() => {
+        //   console.log('Successfully added the activity');
+        // }).catch((err) => {
+        //   console.error('Error has occurred when added the data: ', err)
+        // });
+
       }
     }
   };

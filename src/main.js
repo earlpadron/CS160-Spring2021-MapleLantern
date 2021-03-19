@@ -6,7 +6,27 @@ import firebase from 'firebase/app';
 import "firebase/firestore";
 import "firebase/auth"
 import vuetify from './plugins/vuetify';
+// import store from "./store";
+import Vuex from "vuex";
 
+Vue.use(Vuex);
+const store = new Vuex.Store({
+    state: {
+        email:"",
+        userType:""
+    },
+    getter: {
+        getEmail: state => {
+            return state.email;
+        }
+    },
+    mutation: {
+
+    },
+    action: {
+
+    }
+})
 
 Vue.config.productionTip = false
 
@@ -29,6 +49,7 @@ new Vue({
   el: "#app",
   router: router,
   vuetify,
+  store,
   render: h => h(App)
 }).$mount('#app')
 

@@ -52,7 +52,8 @@ import firebase from 'firebase';
 import CryptoJS from 'crypto-js'
 
 export default {
-  mane: 'login',
+  name: 'login',
+
   data() {
     return {
       email:"",
@@ -70,9 +71,17 @@ export default {
         .catch((error) => {
           alert(error.message);
         });
+
+      this.$store.state.email = this.email;
+      console.log(this.$store.state.email);
+
+    },
+    getUserEmail: function() {
+      return this.email;
     }
   }
 }
+
 </script>
 
 <style scoped>

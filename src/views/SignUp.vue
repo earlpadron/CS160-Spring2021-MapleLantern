@@ -41,6 +41,7 @@
               </v-col>
             </v-row>
           </v-container>
+          
           <v-container fluid>
             <v-btn
               :disabled="!valid"
@@ -62,7 +63,6 @@
 <script>
 
 import firebase from "firebase";
-import user from ""
 
 export default {
   name: "signUp",
@@ -80,7 +80,7 @@ export default {
     // Added users to their appropriate collections
     addUser: function (name, email, type) {
       const db = firebase.firestore();
-      if (this.userType == "Citizen") {
+      if (type == "Citizen") {
         db.collection("Citizens")
           .add({
             email: email,
@@ -95,7 +95,7 @@ export default {
             console.error("Error creating new citizen document: ", err);
           });
       }
-      if (this.userType == "Service Provider") {
+      if (type == "Service Provider") {
         db.collection("ServiceProviders")
           .add({
             email: email,
