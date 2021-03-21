@@ -3,63 +3,72 @@
     <v-container></v-container>
     <v-container></v-container>
     <v-container>
-      <v-card
-        class="mx-auto"
-        max-width="800"
-      >
-        <v-form
-        class="pa-5"
-        ref="form"
-        v-model="valid"
-        lazy-validation
-        >
-          
-          <v-text-field
-            v-model="Name"
-            label="Name"
-            required
-          ></v-text-field>
+      <v-card class="mx-auto" max-width="800">
+        <v-form class="pa-5" ref="form">
+          <!-- v-model="valid" lazy-validation> -->
+          <v-text-field v-model="Name" label="Name" required></v-text-field>
 
-        <v-layout column wrap>
+          <v-layout column wrap>
             <v-menu
-            v-model="fromDateMenu"
-            :close-on-content-click="false"
-            :nudge-right="40"
-            lazy
-            transition="scale-transition"
-            offset-y
-            full-width
-            max-width="290px"
-            min-width="290px"
+              v-model="fromDateMenu"
+              :close-on-content-click="false"
+              :nudge-right="40"
+              lazy
+              transition="scale-transition"
+              offset-y
+              full-width
+              max-width="290px"
+              min-width="290px"
             >
-            <template v-slot:activator="{ on }">
+              <template v-slot:activator="{ on }">
                 <v-text-field
-                label="From Date"
-                readonly
-                :value="fromDateDisp"
-                v-on="on"
+                  label="From Date"
+                  readonly
+                  :value="fromDateDisp"
+                  v-on="on"
                 ></v-text-field>
+              </template>
 
-
-                <v-text-field
-                label="To Date"
-                readonly
-                :value="fromDateDisp"
-                v-on="on"
-                ></v-text-field>
-
-            </template>
-
-            <v-date-picker
+              <v-date-picker
                 locale="en-in"
                 :min="minDate"
                 :max="maxDate"
                 v-model="fromDateVal"
                 no-title
                 @input="fromDateMenu = false"
-            ></v-date-picker>
+              ></v-date-picker>
             </v-menu>
-        </v-layout>
+
+            <v-menu
+              v-model="toDateMenu"
+              :close-on-content-click="false"
+              :nudge-right="40"
+              lazy
+              transition="scale-transition"
+              offset-y
+              full-width
+              max-width="290px"
+              min-width="290px"
+            >
+              <template v-slot:activator="{ on }">
+                <v-text-field
+                  label="To Date"
+                  readonly
+                  :value="toDateDisp"
+                  v-on="on"
+                ></v-text-field>
+              </template>
+
+              <v-date-picker
+                locale="en-in"
+                :min="minDate"
+                :max="maxDate"
+                v-model="toDateVal"
+                no-title
+                @input="fromDateMenu2 = false"
+              ></v-date-picker>
+            </v-menu>
+          </v-layout>
 
           <v-text-field
             v-model="AgeGroup"
@@ -73,18 +82,22 @@
             required
           ></v-textarea>
 
+          <p>Cost: {{ cost }}</p>
+          <v-text-field
+            class="inputField input-name p-3 styled-input"
+            v-model="cost"
+            hide-details
+            type="number"
+          />
+
           <v-file-input
             v-model="Upload"
             label="Upload an image"
             required
           ></v-file-input>
 
-          <v-btn
-            :disabled="!valid"
-            color="success"
-            class="mr-4"
-            @click="post()"
-          >
+          <v-btn color="success" class="mr-4" @click="post()">
+            <!-- :disabled="!valid" -->
             Post
           </v-btn>
         </v-form>
@@ -95,52 +108,72 @@
 
 <script>
 import firebase from "firebase";
-import Login from './Login.vue';
+import Login from "./Login.vue";
 
-  export default {
-    data() {
-      return {
-        fromDateMenu: false,
-        fromDateVal: null,
+export default {
+  data() {
+    return {
+      fromDateMenu: false,
+      toDateMenu: false,
 
-        minDate: "2019-07-04",
-        maxDate: "2019-08-30",
-      };
+      minDate: "2020-07-04",
+      maxDate: "2030-08-30",
+      //values from the calendar
+      fromDateVal: null,
+      toDateVal: null,
+      AgeGroup: null,
+      Name: "",
+      Description: "",
+      cost: 0,
+      Upload: null,
+    };
+  },
+  computed: {
+    fromDateDisp() {
+      return this.fromDateVal;
+      // format date, apply validations, etc. Example below.
+      // return this.fromDateVal ? this.formatDate(this.fromDateVal) : "";
     },
-    computed: {
-      fromDateDisp() {
-        return this.fromDateVal;
-        // format date, apply validations, etc. Example below.
-        // return this.fromDateVal ? this.formatDate(this.fromDateVal) : "";
-      },
+    toDateDisp() {
+      return this.toDateVal;
+      // format date, apply validations, etc. Example below.
+      // return this.fromDateVal ? this.formatDate(this.fromDateVal) : "";
     },
-    methods: {
-      post: async function(){
-        const db = firebase.firestore();
-        const email = this.$store.state.email;//this.$store._modules.root.state.email;
-        console.log(email);
+  },
+  methods: {
+    post: async function () {
+      console;
+      const db = firebase.firestore();
+      const email = this.$store.state.email; //this.$store._modules.root.state.email;
+      console.log(email);
 
-        const data = await db.collection('ServiceProviders').where("email", "==", 'aaaaa@mail.com').get();
-        const docIF = data.docs[0].id;
-        console.log(docIF);
-        const user = "/ServiceProivders/"+docIF;
+      const data = await db
+        .collection("ServiceProviders")
+        .where("email", "==", "aaaaa@mail.com")
+        .get();
+      const docID = data.docs[0].id;
+      console.log(docID);
+      const user = "/ServiceProivders/" + docID;
 
-        // db.collection('Activities').add({
-        //   ageGroup:"",
-        //   approved: false,
-        //   category: [],
-        //   cost:0,
-        //   datePosted:,
-        //   eventDate:,
-        //   name:"",
-        //   provider: user
-        // }). then(() => {
-        //   console.log('Successfully added the activity');
-        // }).catch((err) => {
-        //   console.error('Error has occurred when added the data: ', err)
-        // });
-
-      }
-    }
-  };
+      db.collection("Activities")
+        .add({
+          ageGroup: this.AgeGroup,
+          approved: false,
+          category: [],
+          cost: this.cost,
+          datePosted: new Date(),
+          eventDateEnd: this.toDateVal,
+          eventDateStart: this.fromDateVal,
+          name: this.Name,
+          provider: user,
+        })
+        .then(() => {
+          console.log("Successfully added the activity");
+        })
+        .catch((err) => {
+          console.error("Error has occurred when added the data: ", err);
+        });
+    },
+  },
+};
 </script>

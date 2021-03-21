@@ -16,9 +16,9 @@ const store = new Vuex.Store({
         userType:""
     },
     getter: {
-        getEmail: function() {
-            return this.$state.email;
-        }
+      getEmail: function() {
+          return this.$state.email;
+      }
     },
     mutation: {
 
