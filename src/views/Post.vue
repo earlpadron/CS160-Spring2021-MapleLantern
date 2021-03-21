@@ -28,7 +28,9 @@
                   v-on="on"
                 ></v-text-field>
               </template>
-
+              <!-- TODO: change datapicker to add a time as well
+use this package: https://stackoverflow.com/questions/58228404/implement-datetimepicker-to-vuetify
+ -->
               <v-date-picker
                 locale="en-in"
                 :min="minDate"
@@ -108,7 +110,6 @@
 
 <script>
 import firebase from "firebase";
-import Login from "./Login.vue";
 
 export default {
   data() {
@@ -142,17 +143,14 @@ export default {
   },
   methods: {
     post: async function () {
-      console;
       const db = firebase.firestore();
       const email = this.$store.state.email; //this.$store._modules.root.state.email;
-      console.log(email);
 
       const data = await db
         .collection("ServiceProviders")
         .where("email", "==", "aaaaa@mail.com")
         .get();
       const docID = data.docs[0].id;
-      console.log(docID);
       const user = "/ServiceProivders/" + docID;
 
       db.collection("Activities")
