@@ -10,20 +10,17 @@
         <v-form
         class="pa-5"
         ref="form"
-        v-model="valid"
         lazy-validation
         >
 
           <v-text-field
             v-model="email"
-            :rules="emailRules"
             label="E-mail"
             required
           ></v-text-field>
 
           <v-text-field
             v-model="password"
-            :rules="passwordRules"
             label="Password"
             :append-icon="pvisvalue ? 'mdi-eye' : 'mdi-eye-off'"
             @click:append="() => (pvisvalue = !pvisvalue)"
@@ -32,7 +29,6 @@
           ></v-text-field>
 
           <v-btn
-            :disabled="!valid"
             color="success"
             class="mr-4"
             @click="login()"

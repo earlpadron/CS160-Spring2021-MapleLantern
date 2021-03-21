@@ -117,7 +117,7 @@ import Login from './Login.vue';
     methods: {
       post: async function(){
         const db = firebase.firestore();
-        const email = this.$store._modules.root.state.email;
+        const email = this.$store.state.email;//this.$store._modules.root.state.email;
         console.log(email);
 
         const data = await db.collection('ServiceProviders').where("email", "==", 'aaaaa@mail.com').get();

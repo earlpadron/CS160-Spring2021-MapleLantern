@@ -4,7 +4,7 @@
     <v-container></v-container>
     <v-container>
       <v-card class="mx-auto" max-width="500">
-        <v-form class="pa-5" ref="form" v-model="valid" lazy-validation>
+        <v-form class="pa-5" ref="form" lazy-validation>
           <v-text-field
             v-model="name"
             :error-messages="errors"
@@ -21,7 +21,6 @@
 
           <v-text-field
             v-model="password"
-            :rules="passwordRules"
             label="Password"
             :append-icon="pvisvalue ? 'mdi-eye' : 'mdi-eye-off'"
             @click:append="() => (pvisvalue = !pvisvalue)"
@@ -44,7 +43,6 @@
           
           <v-container fluid>
             <v-btn
-              :disabled="!valid"
               color="success"
               class="mr-4"
               @click="signUp()"
