@@ -2,7 +2,7 @@
     <div class="home">
       <v-container>
         <h3>HOME</h3>
-        <button @click="logout"> Log out </button>
+        <button @click="logout"> Log Out </button>
       </v-container>
 
       <v-container>
@@ -64,6 +64,7 @@
                       <v-list-item-content>
                         <v-list-item-title>
                           List Item {{ n }}
+                          
                         </v-list-item-title>
                       </v-list-item-content>
                     </v-list-item>
@@ -93,10 +94,10 @@ export default {
     data() {
         return {
           links: [
-          'Dashboard',
-          'Messages',
-          'Profile',
-          'Updates',
+          'browse',
+          'schedule',
+          'profile',
+          'settings',
       ],
         };
     },
