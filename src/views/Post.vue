@@ -23,7 +23,7 @@
         <v-layout column wrap>
             <v-menu
             v-model="fromDateMenu"
-            :close-on-content-click="false"
+            :close-on-content-click="true"
             :nudge-right="40"
             lazy
             transition="scale-transition"
@@ -35,7 +35,6 @@
             <template v-slot:activator="{ on }">
                 <v-text-field
                 label="From Date"
-                readonly
                 :value="fromDateDisp"
                 v-on="on"
                 ></v-text-field>
@@ -43,7 +42,6 @@
 
                 <v-text-field
                 label="To Date"
-                readonly
                 :value="fromDateDisp"
                 v-on="on"
                 ></v-text-field>
@@ -72,6 +70,14 @@
             label="Description"
             required
           ></v-textarea>
+
+          <v-overflow-btn
+            v-model="select"
+            :items="items"
+            item-text="Category"
+            label="Select a Category"
+            single-line
+          ></v-overflow-btn>
 
           <v-file-input
             v-model="Upload"
@@ -102,6 +108,14 @@
 
         minDate: "2019-07-04",
         maxDate: "2019-08-30",
+
+        items: [
+          { Category: 'Tutoring'},
+          { Category: 'Volunteering'},
+          { Category: 'Indoor Activity'},
+          { Category: 'Outdoor Activity'},
+          { Category: 'Other'}
+        ]
       };
     },
     computed: {
