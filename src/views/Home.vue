@@ -22,7 +22,7 @@
 
           <v-spacer></v-spacer>
 
-<!-- TODO: add on enter to start the search -->
+          <!-- TODO: add on enter to start the search -->
           <v-responsive max-width="260">
             <v-text-field
               v-model="searchKeywords"
@@ -40,11 +40,16 @@
         <v-container>
           <v-row>
             <v-col cols="2">
+              <div class="text-center">
+                <h1 class="font-weight-light">Categories</h1>
+              </div>
               <v-sheet rounded="lg">
                 <v-list color="transparent">
-                  <v-list-item v-for="n in 5" :key="n" link>
+                  <v-list-item v-for="n in categories" :key="n" link>
                     <v-list-item-content>
-                      <v-list-item-title> List Item {{ n }} </v-list-item-title>
+                      <v-list-item-title @click="catFilter(n)">
+                        {{ n }}
+                      </v-list-item-title>
                     </v-list-item-content>
                   </v-list-item>
                 </v-list>
@@ -52,7 +57,22 @@
             </v-col>
 
             <v-col>
-              <v-sheet min-height="70vh" rounded="lg"> </v-sheet>
+              <v-sheet min-height="70vh" rounded="lg">
+                <v-list color="transparent">
+                  <v-list-item v-for="n of res" :key="n.name">
+                    <v-list-item-content>
+                      <activity-card
+                        :description="n.data.description"
+                        :cost="n.data.cost"
+                        :activityName="n.data.name"
+                        :eventStart="n.data.eventDateStart"
+                        :eventEnd="n.data.eventDateEnd"
+                        :categories="n.data.category"
+                      />
+                    </v-list-item-content>
+                  </v-list-item>
+                </v-list>
+              </v-sheet>
             </v-col>
           </v-row>
         </v-container>
@@ -63,13 +83,23 @@
 
 <script>
 import firebase from "firebase";
+import ActivityCard from "../components/ActivityCard.vue";
 
 export default {
+  components: { ActivityCard },
   name: "home",
   data() {
     return {
       links: ["Dashboard", "Messages", "Profile", "Updates"],
-      searchKeywords:"",
+      searchKeywords: "",
+      categories: [
+        "Volunteering",
+        "Tutoring",
+        "Indoor Activity",
+        "Outdoor Activity",
+        "Other",
+      ],
+      res: [],
     };
   },
 
@@ -88,25 +118,64 @@ export default {
       alert("Redirecting to post creation page");
     },
 
-    search: async function() {
+    search: async function () {
       const db = firebase.firestore();
       const keywords = this.search.split(/(\s+)/);
-      let fromName = db.collection("Activities").whereContains("name", keywords);
-      let fromDesc = db.collection("Activities").whereContains("description", keywords);
-      let fromCat = db.collection("Activities").where("category", "array-contains-any", keywords);
-    
+      let fromName = db
+        .collection("Activities")
+        .whereContains("name", keywords);
+      let fromDesc = db
+        .collection("Activities")
+        .whereContains("description", keywords);
+      let fromCat = db
+        .collection("Activities")
+        .where("category", "array-contains-any", keywords);
+
       const [nameRes, descRes, catRes] = await Promise.all([
-        fromName, fromDesc,fromCat
-      ]).then(() => {
-          console.log("Successfully found all the activities");
+        fromName,
+        fromDesc,
+        fromCat,
+      ])
+        .get()
+        .then(function (querySnapshot) {
+          querySnapshot.forEach(function (doc) {
+            // doc.data() is never undefined for query doc snapshots
+            console.log(doc.id, " => ", doc.data());
+          });
         })
-        .catch((err) => {
-          console.error("Error has occurred when added the data: ", err);
+        .catch(function (error) {
+          console.log("Error getting documents: ", error);
         });
 
-      const allRes =nameRes.concat(descRes).concat(catRes);
+      // .then(() => {
+      //   console.log("Successfully found all the activities");
+      // })
+      // .catch((err) => {
+      //   console.error("Error has occurred when added the data: ", err);
+      // });
 
-    }
+      const allRes = nameRes.concat(descRes).concat(catRes);
+    },
+
+    catFilter: async function (n) {
+      const db = firebase.firestore();
+      const d = []
+      await db.collection("Activities")
+        .where("category", "array-contains", n)
+        .get()
+        .then(function (querySnapshot) {
+          querySnapshot.forEach(function (doc) {
+            // doc.data() is never undefined for query doc snapshots
+            console.log(doc.id, " => ", doc.data());
+            d.push({id: doc.id, data: doc.data()});
+          });
+        })
+        .catch(function (error) {
+          console.log("Error getting documents: ", error);
+        });
+
+      this.res = d;
+    },
   },
 };
 </script>
