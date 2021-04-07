@@ -102,7 +102,24 @@ export default {
       res: [],
     };
   },
+  async created()  {
+  const db = firebase.firestore();
+        const d = []
+        await db.collection("Activities")
+          .get()
+          .then(function (querySnapshot) {
+            querySnapshot.forEach(function (doc) {
+              // doc.data() is never undefined for query doc snapshots
+              console.log(doc.id, " => ", doc.data());
+              d.push({id: doc.id, data: doc.data()});
+            });
+          })
+          .catch(function (error) {
+            console.log("Error getting documents: ", error);
+          });
 
+        this.res = d;
+  },
   methods: {
     logout: function () {
       firebase
