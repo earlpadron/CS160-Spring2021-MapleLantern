@@ -16,14 +16,14 @@
 
           <v-text-field
             v-model="email"
-            :rules="emailRules"
+            :rules="[rules.required, rules.email]"
             label="E-mail"
             required
           ></v-text-field>
 
           <v-text-field
             v-model="password"
-            :rules="passwordRules"
+            :rules="[rules.required, rules.counter]"
             label="Password"
             :append-icon="pvisvalue ? 'mdi-eye' : 'mdi-eye-off'"
             @click:append="() => (pvisvalue = !pvisvalue)"
@@ -49,15 +49,23 @@
 
 <script>
 import firebase from 'firebase';
-import CryptoJS from 'crypto-js'
 
 export default {
   mane: 'login',
   data() {
     return {
+      valid: true,
       email:"",
       password:"",
-      pvisvalue: String
+      pvisvalue: String,
+      rules: {
+        required: value => !!value || 'Required.',
+        counter: value => value.length >= 8 || 'Min 8 characters',
+        email: value => {
+          const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+          return pattern.test(value) || 'Invalid e-mail.'
+        }
+      }
     };
   },
   methods: {

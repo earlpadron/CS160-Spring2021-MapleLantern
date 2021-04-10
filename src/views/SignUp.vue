@@ -57,7 +57,6 @@
 <script>
 
 import firebase from 'firebase/app';
-import CryptoJS from 'crypto-js'
 
 export default {
   mane: 'signUp',
