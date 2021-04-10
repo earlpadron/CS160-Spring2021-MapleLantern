@@ -8,7 +8,7 @@ import Home from './views/Home.vue';
 import Post from './views/Post.vue';
 import Browse from './views/Browse.vue';
 import Settings from './views/Settings.vue';
-import Schedule from './views/Schedule.vue';
+import Profile from './views/Profile.vue';
 // import HelloWorld from './components/HelloWorld.vue';
 
 Vue.use(Router);
@@ -59,9 +59,9 @@ const router = new Router({
             component: Settings
         },
         {
-            path: '/schedule',
-            name: 'Schedule',
-            component: Schedule
+            path: '/profile',
+            name: 'Profile',
+            component: Profile
         }
     ]
 });

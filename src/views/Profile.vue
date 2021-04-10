@@ -1,5 +1,5 @@
 <template>
-    <div class="schedule">
+    <div class="profile">
         <v-main class="grey lighten-3">
           <v-container>
             <v-card
@@ -18,11 +18,11 @@
 <script>
 import firebase from 'firebase';
 export default {
-    name:'schedule',
+    name:'profile',
     data() {
         return {
           posts: [
-          'schedule1',
+          'profile1',
           'dummy2',
           'dummy3',
           'dummy4',

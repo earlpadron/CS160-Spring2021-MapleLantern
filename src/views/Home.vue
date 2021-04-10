@@ -16,7 +16,7 @@
         <v-container class="py-0 fill-height">
           <v-avatar class="mr-10" color="grey darken-1" size="32"></v-avatar>
 
-          <v-btn v-for="link in links" :key="link" text>
+          <v-btn v-for="link in links" :key="link" text @click="leave(link)">
             {{ link }}
           </v-btn>
 
@@ -96,6 +96,10 @@ export default {
     },
     filter: function (n) {
       console.log(n);
+    },
+    leave: function (n) {
+      this.$router.replace(`/${n}`);
+      alert(`Redirecting to ${n} page`);
     },
   },
 };
