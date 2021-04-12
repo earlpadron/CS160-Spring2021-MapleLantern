@@ -88,10 +88,10 @@ import ActivityCard from "../components/ActivityCard.vue";
 export default {
   components: { ActivityCard },
   name: "home",
+      
   data() {
     return {
-      links: ["Dashboard", "Messages", "Profile", "Updates"],
-      searchKeywords: "",
+      links: ["browse", "schedule", "profile", "settings"],
       categories: [
         "Volunteering",
         "Tutoring",
@@ -99,6 +99,7 @@ export default {
         "Outdoor Activity",
         "Other",
       ],
+      searchKeywords: "",
       res: [],
     };
   },
@@ -134,7 +135,6 @@ export default {
       this.$router.replace("/post");
       alert("Redirecting to post creation page");
     },
-
     search: async function () {
       const db = firebase.firestore();
       const keywords = this.search.split(/(\s+)/);

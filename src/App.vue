@@ -8,33 +8,26 @@
       <div class="d-flex align-center">
         <v-img
           alt="Vuetify Logo"
-          class="shrink mr-2"
+          class="mr-2"
           contain
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-logo-dark.png"
+          src="https://images.fineartamerica.com/images/artworkimages/mediumlarge/1/blue-maple-leaves-colin-drysdale.jpg"
           transition="scale-transition"
-          width="40"
+          width="60"
         />
-
-        <v-img
-          alt="Vuetify Name"
-          class="shrink mt-1 hidden-sm-and-down"
-          contain
-          min-width="100"
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-name-dark.png"
-          width="100"
-        />
+        <router-link to='/home'>
+          <v-img
+            alt="Vuetify Name"
+            class="shrink mt-1"
+            contain
+            min-width="100"
+            :src="require('./assets/Title.png')"
+            width="240"
+            to='/home'
+          />
+        </router-link>
       </div>
 
       <v-spacer></v-spacer>
-
-      <v-btn
-        href="https://github.com/vuetifyjs/vuetify/releases/latest"
-        target="_blank"
-        text
-      >
-        <span class="mr-2">Latest Release</span>
-        <v-icon>mdi-open-in-new</v-icon>
-      </v-btn>
     </v-app-bar>
 
     <v-main>

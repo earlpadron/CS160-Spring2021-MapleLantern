@@ -6,6 +6,10 @@ import Login from './views/Login.vue';
 import SignUp from './views/SignUp.vue';
 import Home from './views/Home.vue';
 import Post from './views/Post.vue';
+import Browse from './views/Browse.vue';
+import Settings from './views/Settings.vue';
+import Schedule from './views/Schedule.vue';
+// import HelloWorld from './components/HelloWorld.vue';
 
 Vue.use(Router);
 
@@ -43,6 +47,21 @@ const router = new Router({
             path: '/post',
             name: 'Post',
             component: Post
+        },
+        {
+            path: '/browse',
+            name: 'Browse',
+            component: Browse
+        },
+        {
+            path: '/settings',
+            name: 'Settings',
+            component: Settings
+        },
+        {
+            path: '/schedule',
+            name: 'Schedule',
+            component: Schedule
         }
     ]
 });
