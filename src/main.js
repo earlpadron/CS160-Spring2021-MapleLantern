@@ -27,7 +27,7 @@ var firebaseConfig = {
 };
 
 // Initialize Firebase
-firebase.initializeApp(firebaseConfig);
+var firebaseApp = firebase.initializeApp(firebaseConfig, "app");
 firebase.analytics();
 
 new Vue({
@@ -36,6 +36,10 @@ new Vue({
   vuetify,
   render: h => h(App)
 }).$mount('#app')
+
+export {
+  firebaseApp
+};
 
 // Amplify.configure(aws_exports);
 // applyPolyfills().then(() => {

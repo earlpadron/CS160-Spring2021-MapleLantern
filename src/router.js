@@ -9,6 +9,7 @@ import Post from './views/Post.vue';
 import Browse from './views/Browse.vue';
 import Settings from './views/Settings.vue';
 import Profile from './views/Profile.vue';
+import Payment from './views/Payment.vue';
 // import HelloWorld from './components/HelloWorld.vue';
 
 Vue.use(Router);
@@ -62,6 +63,11 @@ const router = new Router({
             path: '/profile',
             name: 'Profile',
             component: Profile
+        },
+        {
+            path: '/payment',
+            name: 'Payment',
+            component: Payment
         }
     ]
 });

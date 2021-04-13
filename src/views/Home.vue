@@ -6,6 +6,12 @@
     </v-container>
 
     <v-container>
+      <v-btn color="success" class="mr-4" @click="payment()">
+        Add/Edit Payment Details
+      </v-btn>
+    </v-container>
+
+    <v-container>
       <v-btn color="success" class="mr-4" @click="post()">
         Create A Post
       </v-btn>
@@ -93,6 +99,10 @@ export default {
     post: function () {
       this.$router.replace("/post");
       alert("Redirecting to post creation page");
+    },
+    payment: function () {
+      this.$router.replace("/payment");
+      alert("Redirecting to payment details page");
     },
     filter: function (n) {
       console.log(n);
