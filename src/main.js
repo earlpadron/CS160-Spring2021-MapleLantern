@@ -42,7 +42,7 @@ var firebaseConfig = {
 };
 
 // Initialize Firebase
-firebase.initializeApp(firebaseConfig);
+var firebaseApp = firebase.initializeApp(firebaseConfig, "app");
 firebase.analytics();
 
 new Vue({
@@ -52,4 +52,8 @@ new Vue({
   store,
   render: h => h(App)
 }).$mount('#app')
+
+export {
+  firebaseApp
+};
 

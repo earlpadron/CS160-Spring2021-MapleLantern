@@ -6,6 +6,12 @@
     </v-container>
 
     <v-container>
+      <v-btn color="success" class="mr-4" @click="payment()">
+        Add/Edit Payment Details
+      </v-btn>
+    </v-container>
+
+    <v-container>
       <v-btn color="success" class="mr-4" @click="post()">
         Create A Post
       </v-btn>
@@ -16,7 +22,7 @@
         <v-container class="py-0 fill-height">
           <v-avatar class="mr-10" color="grey darken-1" size="32"></v-avatar>
 
-          <v-btn v-for="link in links" :key="link" text>
+          <v-btn v-for="link in links" :key="link" text @click="leave(link)">
             {{ link }}
           </v-btn>
 
@@ -56,9 +62,22 @@
               </v-sheet>
             </v-col>
 
-            <v-col>
+            <v-col col>
               <v-sheet min-height="70vh" rounded="lg">
-                <v-list color="transparent">
+                <v-row no-gutters>
+                  <v-col v-for="n of visiblePages" :key="n.name">
+                    <activity-card
+                      class="ma-md-5 mx-md-5"
+                      :description="n.data.description"
+                      :cost="n.data.cost"
+                      :activityName="n.data.name"
+                      :eventStart="n.data.eventDateStart"
+                      :eventEnd="n.data.eventDateEnd"
+                      :categories="n.data.category"
+                    />
+                  </v-col>
+                </v-row>
+                <!-- <v-list color="transparent">
                   <v-list-item v-for="n of res" :key="n.name">
                     <v-list-item-content>
                       <activity-card
@@ -71,8 +90,12 @@
                       />
                     </v-list-item-content>
                   </v-list-item>
-                </v-list>
+                </v-list> -->
               </v-sheet>
+              <v-pagination
+                v-model="pagination.page"
+                :length="Math.ceil(res.length / pagination.perPage)"
+              ></v-pagination>
             </v-col>
           </v-row>
         </v-container>
@@ -88,7 +111,7 @@ import ActivityCard from "../components/ActivityCard.vue";
 export default {
   components: { ActivityCard },
   name: "home",
-      
+
   data() {
     return {
       links: ["browse", "schedule", "profile", "settings"],
@@ -101,26 +124,41 @@ export default {
       ],
       searchKeywords: "",
       res: [],
+      pagination: {
+        page: 1,
+        perPage: 6,
+      },
     };
   },
-  async created()  {
-  const db = firebase.firestore();
-        const d = []
-        await db.collection("Activities")
-          .get()
-          .then(function (querySnapshot) {
-            querySnapshot.forEach(function (doc) {
-              // doc.data() is never undefined for query doc snapshots
-              console.log(doc.id, " => ", doc.data());
-              d.push({id: doc.id, data: doc.data()});
-            });
-          })
-          .catch(function (error) {
-            console.log("Error getting documents: ", error);
-          });
+  async created() {
+    const db = firebase.firestore();
+    const d = [];
+    await db
+      .collection("Activities")
+      .get()
+      .then(function (querySnapshot) {
+        querySnapshot.forEach(function (doc) {
+          // doc.data() is never undefined for query doc snapshots
+          console.log(doc.id, " => ", doc.data());
+          d.push({ id: doc.id, data: doc.data() });
+        });
+      })
+      .catch(function (error) {
+        console.log("Error getting documents: ", error);
+      });
 
-        this.res = d;
+    this.res = d;
   },
+
+  computed: {
+    visiblePages() {
+      return this.res.slice(
+        (this.pagination.page - 1) * this.pagination.perPage,
+        this.pagination.page * this.pagination.perPage
+      );
+    },
+  },
+
   methods: {
     logout: function () {
       firebase
@@ -163,28 +201,21 @@ export default {
         .catch(function (error) {
           console.log("Error getting documents: ", error);
         });
-
-      // .then(() => {
-      //   console.log("Successfully found all the activities");
-      // })
-      // .catch((err) => {
-      //   console.error("Error has occurred when added the data: ", err);
-      // });
-
       const allRes = nameRes.concat(descRes).concat(catRes);
     },
 
     catFilter: async function (n) {
       const db = firebase.firestore();
-      const d = []
-      await db.collection("Activities")
+      const d = [];
+      await db
+        .collection("Activities")
         .where("category", "array-contains", n)
         .get()
         .then(function (querySnapshot) {
           querySnapshot.forEach(function (doc) {
             // doc.data() is never undefined for query doc snapshots
             console.log(doc.id, " => ", doc.data());
-            d.push({id: doc.id, data: doc.data()});
+            d.push({ id: doc.id, data: doc.data() });
           });
         })
         .catch(function (error) {
@@ -193,9 +224,23 @@ export default {
 
       this.res = d;
     },
+    payment: function () {
+      this.$router.replace("/payment");
+      alert("Redirecting to payment details page");
+    },
+    filter: function (n) {
+      console.log(n);
+    },
+    leave: function (n) {
+      this.$router.replace(`/${n}`);
+      alert(`Redirecting to ${n} page`);
+    },
   },
 };
 </script>
 
 <style scoped>
+.activity-card {
+  padding-top: 50px;
+}
 </style>
