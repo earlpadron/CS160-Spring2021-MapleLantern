@@ -13,11 +13,16 @@ Vue.use(Vuex);
 const store = new Vuex.Store({
     state: {
         email:"",
-        userType:""
+        userType:"",
+        results:[]
     },
     getter: {
       getEmail: function() {
           return this.$state.email;
+      },
+
+      getRes: function() {
+        return this.$state.results;
       }
     },
     mutation: {

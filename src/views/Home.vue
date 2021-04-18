@@ -20,7 +20,9 @@
     <v-app id="inspire">
       <v-app-bar app color="white" flat>
         <v-container class="py-0 fill-height">
-          <v-avatar class="mr-10" color="grey darken-1" size="32"></v-avatar>
+          <v-avatar class="mr-10" color="green darken-1" size="32"
+            ><span class="white--text headline">CJ</span></v-avatar
+          >
 
           <v-btn v-for="link in links" :key="link" text @click="leave(link)">
             {{ link }}
@@ -67,7 +69,7 @@
                 <v-row no-gutters>
                   <v-col v-for="n of visiblePages" :key="n.name">
                     <activity-card
-                      class="ma-md-5 mx-md-5"
+                      class="ma-md-4 mx-md-4"
                       :description="n.data.description"
                       :cost="n.data.cost"
                       :activityName="n.data.name"
@@ -77,20 +79,6 @@
                     />
                   </v-col>
                 </v-row>
-                <!-- <v-list color="transparent">
-                  <v-list-item v-for="n of res" :key="n.name">
-                    <v-list-item-content>
-                      <activity-card
-                        :description="n.data.description"
-                        :cost="n.data.cost"
-                        :activityName="n.data.name"
-                        :eventStart="n.data.eventDateStart"
-                        :eventEnd="n.data.eventDateEnd"
-                        :categories="n.data.category"
-                      />
-                    </v-list-item-content>
-                  </v-list-item>
-                </v-list> -->
               </v-sheet>
               <v-pagination
                 v-model="pagination.page"
@@ -121,6 +109,7 @@ export default {
         "Indoor Activity",
         "Outdoor Activity",
         "Other",
+        "All",
       ],
       searchKeywords: "",
       res: [],
@@ -207,23 +196,40 @@ export default {
     catFilter: async function (n) {
       const db = firebase.firestore();
       const d = [];
-      await db
-        .collection("Activities")
-        .where("category", "array-contains", n)
-        .get()
-        .then(function (querySnapshot) {
-          querySnapshot.forEach(function (doc) {
-            // doc.data() is never undefined for query doc snapshots
-            console.log(doc.id, " => ", doc.data());
-            d.push({ id: doc.id, data: doc.data() });
+      if (n == "All") {
+        await db
+          .collection("Activities")
+          .get()
+          .then(function (querySnapshot) {
+            querySnapshot.forEach(function (doc) {
+              // doc.data() is never undefined for query doc snapshots
+              console.log(doc.id, " => ", doc.data());
+              d.push({ id: doc.id, data: doc.data() });
+            });
+          })
+          .catch(function (error) {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch(function (error) {
-          console.log("Error getting documents: ", error);
-        });
-
+      } else {
+        await db
+          .collection("Activities")
+          .where("category", "array-contains", n)
+          .get()
+          .then(function (querySnapshot) {
+            querySnapshot.forEach(function (doc) {
+              // doc.data() is never undefined for query doc snapshots
+              console.log(doc.id, " => ", doc.data());
+              d.push({ id: doc.id, data: doc.data() });
+            });
+          })
+          .catch(function (error) {
+            console.log("Error getting documents: ", error);
+          });
+      }
       this.res = d;
+      this.$store.state.results = d;
     },
+
     payment: function () {
       this.$router.replace("/payment");
       alert("Redirecting to payment details page");
