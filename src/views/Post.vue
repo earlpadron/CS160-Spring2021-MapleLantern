@@ -87,7 +87,7 @@ use this package: https://stackoverflow.com/questions/58228404/implement-datetim
           <p>Cost: {{ cost }}</p>
           <v-text-field
             class="inputField input-name p-3 styled-input"
-            v-model="cost"
+            v-model.number="cost"
             hide-details
             type="number"
           />
@@ -144,11 +144,11 @@ export default {
   methods: {
     post: async function () {
       const db = firebase.firestore();
-      const email = this.$store.state.email; //this.$store._modules.root.state.email;
+      // const email = this.$store.state.user.email; //this.$store._modules.root.state.email;
 
       const data = await db
         .collection("ServiceProviders")
-        .where("email", "==", "aaaaa@mail.com")
+        .where("email", "==", this.$store.state.user.email)
         .get();
       const docID = data.docs[0].id;
       const user = "/ServiceProivders/" + docID;
@@ -157,6 +157,7 @@ export default {
         .add({
           ageGroup: this.AgeGroup,
           approved: false,
+          adminApproved: false,
           category: [],
           cost: this.cost,
           datePosted: new Date(),
