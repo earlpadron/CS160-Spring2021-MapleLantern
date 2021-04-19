@@ -21,7 +21,7 @@
                   <v-list-item-title class="title" style="margin-top: 10px">{{
                     name
                   }}</v-list-item-title>
-                  <v-list-item-subtitle
+                  <v-list-item-subtitle v-if ="isCitizen || isVender" 
                     >Points: {{ points }}</v-list-item-subtitle
                   >
                   <v-list-item-subtitle v-if="isCitizen"
@@ -55,8 +55,8 @@
                   :eventEnd="n.data.eventDateEnd"
                   :categories="n.data.category"
                   :isProfileCard="isCitizen"
-                  :isVenderCard="isVenderCard"
-                  :isAdminCard="isAdminCard"
+                  :isVenderCard="isVender"
+                  :isAdminCard="isAdmin"
                 />
               </div>
             </v-slide-item>
@@ -187,7 +187,6 @@ export default {
           .get()
           .then(function (querySnapshot) {
             querySnapshot.forEach(function (doc) {
-              // console.log(doc.id, " => ", doc.data());
               d.push({ id: doc.id, data: doc.data() });
             });
           })
