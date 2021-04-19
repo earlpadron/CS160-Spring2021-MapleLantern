@@ -1,49 +1,63 @@
 <template>
-  <div class="profile">
-    <v-container>
-      <v-card class="mx-auto" max-width="85%" tile>
-        <v-img
-          height="200"
-          src="https://cdn.vuetifyjs.com/images/cards/server-room.jpg"
-        ></v-img>
-        <v-row style="margin: 2.5%; position: absolute; top: 130px">
-          <v-list-item>
-            <v-list-item-avatar size="100">
-              <v-avatar class="ma-md-15 mx-md-15" color="red" size="164">
-                <span class="white--text headline">CJ</span>
-              </v-avatar>
-            </v-list-item-avatar>
-            <v-list-item-content>
-              <v-list-item-title class="title" style="margin-top: 10px"
-                >user.name</v-list-item-title
-              >
-              <v-list-item-subtitle>Points: user.points</v-list-item-subtitle>
-              <v-list-item-subtitle
-                ><a v-on:click="doSomething">
-                  Add points
-                </a></v-list-item-subtitle
-              >
-            </v-list-item-content>
-          </v-list-item>
-        </v-row>
-      </v-card>
-    </v-container>
-
+  <div class="profile" style="overflow: hidden">
     <v-app id="inspire">
       <v-main>
-        <div class="text-center">
-          <h1 class="font-weight-light">Cards</h1>
-        </div>
-        <v-sheet class="mx-auto" max-width="80%">
+        <v-container>
+          <v-card class="mx-auto" max-width="85%" tile>
+            <v-img
+              height="200"
+              src="https://cdn.vuetifyjs.com/images/cards/server-room.jpg"
+            ></v-img>
+            <v-row>
+              <!-- Style for the v-row -->
+              <!-- style="margin: 2.5%; position: absolute; top: 130px"> -->
+              <v-list-item>
+                <v-list-item-avatar size="100">
+                  <v-avatar class="ma-md-15 mx-md-15" color="red" size="164">
+                    <span class="white--text headline">CJ</span>
+                  </v-avatar>
+                </v-list-item-avatar>
+                <v-list-item-content>
+                  <v-list-item-title class="title" style="margin-top: 10px">{{
+                    name
+                  }}</v-list-item-title>
+                  <v-list-item-subtitle
+                    >Points: {{ points }}</v-list-item-subtitle
+                  >
+                  <v-list-item-subtitle v-if= isCitizen
+                    ><a v-on:click="payment()" >
+                      Add points
+                    </a></v-list-item-subtitle
+                  >
+                </v-list-item-content>
+              </v-list-item>
+            </v-row>
+          </v-card>
+        </v-container>
+        <v-sheet class="mx-auto mt-5" max-width="80%">
+          <div class="text-center">
+            <h1 class="font-weight-light">Activities</h1>
+          </div>
           <v-slide-group
             v-model="model"
-            class="pa-4"
+            class="pa-2"
             active-class="success"
             show-arrows
           >
-            <v-slide-item v-for="n in 15" :key="n">
-              <div class="ma-md-4 mx-md-4">
-                <activity-card />
+            <v-slide-item v-for="(n, index) in model" :key="index">
+              <div class="ma-md-5 mx-md-15">
+                <activity-card
+                  class="ma-md-5 mx-md-1"
+                  :description="n.data.description"
+                  :cost="n.data.cost"
+                  :activityName="n.data.name"
+                  :eventStart="n.data.eventDateStart"
+                  :eventEnd="n.data.eventDateEnd"
+                  :categories="n.data.category"
+                  :isProfileCard="isCitizen"
+                  :isVenderCard="isVenderCard"
+                  :isAdminCard="isAdminCard"
+                />
               </div>
             </v-slide-item>
           </v-slide-group>
@@ -62,9 +76,17 @@ export default {
   components: { ActivityCard },
   data() {
     return {
-      posts: ["profile1", "dummy2", "dummy3", "dummy4"],
       model: null,
+      isCitizen: false,
+      isVender: false,
+      isAdmin: false,
+      name: "name",
+      points: 0,
     };
+  },
+
+  created() {
+    this.getCardsData();
   },
   methods: {
     logout: function () {
@@ -79,6 +101,88 @@ export default {
     post: function () {
       this.$router.replace("/post");
       alert("Redirecting to post creation page");
+    },
+    getCardsData: async function () {
+      console.log(this.$store.state);
+      const db = firebase.firestore();
+      const d = [];
+      if (this.$store.state.user.userType == "citizen") {
+        this.isCitizen = true;
+        await db
+          .collection("Citizens")
+          .where("email", "==", this.$store.state.user.email)
+          .get()
+          .then(function (querySnapshot) {
+            querySnapshot.forEach(function (doc) {
+              // console.log(doc.id, " => ", doc.data());
+              d.push({ id: doc.id, data: doc.data() });
+            });
+          })
+          .catch(function (error) {
+            console.log("Error getting documents: ", error);
+          });
+      } else if (this.$store.state.user.userType == "serviceProvider") {
+        this.isVender = true;
+        let docID = "";
+        let userData = {
+          name: "",
+          points: "",
+        };
+        await db
+          .collection("ServiceProviders")
+          .where("email", "==", this.$store.state.user.email)
+          .get()
+          .then(function (querySnapshot) {
+            querySnapshot.forEach(function (doc) {
+              console.log(doc.id, " => ", doc.data());
+              docID = doc.id;
+              userData.name = doc.data().name;
+              userData.points = doc.data().points;
+            });
+          });
+
+        const vendor = "/ServiceProivders/" + docID;
+        this.$store.state.user.name = userData.name;
+        this.$store.state.user.points = userData.points;
+        this.name = this.$store.state.user.name;
+        this.points = this.$store.state.user.points = userData.points;
+
+        await db
+          .collection("Activities")
+          .where("provider", "==", vendor)
+          .get()
+          .then(function (querySnapshot) {
+            querySnapshot.forEach(function (doc) {
+              // console.log(doc.id, " => ", doc.data());
+              d.push({ id: doc.id, data: doc.data() });
+            });
+          })
+          .catch(function (error) {
+            console.log("Error getting documents: ", error);
+          });
+      } else if (this.$store.state.user.userType == "admin") {
+        this.isAdmin = true;
+        await db
+          .collection("Activities")
+          .where("adminApproved", "==", false)
+          .get()
+          .then(function (querySnapshot) {
+            querySnapshot.forEach(function (doc) {
+              // console.log(doc.id, " => ", doc.data());
+              d.push({ id: doc.id, data: doc.data() });
+            });
+          })
+          .catch(function (error) {
+            console.log("Error getting documents: ", error);
+          });
+      }
+
+      this.$store.activities = d;
+      this.model = this.$store.activities;
+    },
+
+    payment: function () {
+      this.$router.replace("/payment");
     },
   },
 };

@@ -5,12 +5,17 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
     state: {
-        email:"",
-        userType:""
+        user: {
+            email: "",
+            userType: "",
+            points: 0,
+            name:""
+        },
+        activities:[]
     },
     getter: {
-        getEmail: state => {
-            return state.email;
+        getUser: state => {
+            return state.user;
         }
     },
     mutation: {

@@ -69,13 +69,14 @@
                 <v-row no-gutters>
                   <v-col v-for="n of visiblePages" :key="n.name">
                     <activity-card
-                      class="ma-md-4 mx-md-4"
+                      class="ma-md-1 mx-md-1"
                       :description="n.data.description"
-                      :cost="n.data.cost"
+                      :cost=n.data.cost
                       :activityName="n.data.name"
                       :eventStart="n.data.eventDateStart"
                       :eventEnd="n.data.eventDateEnd"
-                      :categories="n.data.category"
+                      :categories=n.data.category
+                      :isActivityCard="true"
                     />
                   </v-col>
                 </v-row>
@@ -115,7 +116,7 @@ export default {
       res: [],
       pagination: {
         page: 1,
-        perPage: 6,
+        perPage: 8,
       },
     };
   },
@@ -124,11 +125,12 @@ export default {
     const d = [];
     await db
       .collection("Activities")
+      .where('adminApproved','==',true)
       .get()
       .then(function (querySnapshot) {
         querySnapshot.forEach(function (doc) {
           // doc.data() is never undefined for query doc snapshots
-          console.log(doc.id, " => ", doc.data());
+          // console.log(doc.id, " => ", doc.data());
           d.push({ id: doc.id, data: doc.data() });
         });
       })
@@ -184,7 +186,7 @@ export default {
         .then(function (querySnapshot) {
           querySnapshot.forEach(function (doc) {
             // doc.data() is never undefined for query doc snapshots
-            console.log(doc.id, " => ", doc.data());
+            // console.log(doc.id, " => ", doc.data());
           });
         })
         .catch(function (error) {
@@ -203,7 +205,7 @@ export default {
           .then(function (querySnapshot) {
             querySnapshot.forEach(function (doc) {
               // doc.data() is never undefined for query doc snapshots
-              console.log(doc.id, " => ", doc.data());
+              // console.log(doc.id, " => ", doc.data());
               d.push({ id: doc.id, data: doc.data() });
             });
           })
@@ -218,7 +220,7 @@ export default {
           .then(function (querySnapshot) {
             querySnapshot.forEach(function (doc) {
               // doc.data() is never undefined for query doc snapshots
-              console.log(doc.id, " => ", doc.data());
+              // console.log(doc.id, " => ", doc.data());
               d.push({ id: doc.id, data: doc.data() });
             });
           })
@@ -227,7 +229,7 @@ export default {
           });
       }
       this.res = d;
-      this.$store.state.results = d;
+      this.$store.state.activities = d;
     },
 
     payment: function () {
