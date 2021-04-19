@@ -9,7 +9,9 @@ export default new Vuex.Store({
             email: "",
             userType: "",
             points: 0,
-            name:""
+            name:"",
+            docID: "",
+            docPath:""
         },
         activities:[]
     },

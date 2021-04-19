@@ -54,7 +54,10 @@ export default {
           return pattern.test(value) || "Invalid e-mail.";
         },
       },
-      userType:"",
+      name: "",
+      points: 0,
+      docID: "",
+      docPath: "",
     };
   },
   methods: {
@@ -72,12 +75,20 @@ export default {
 
       this.$store.state.user = {};
       this.$store.state.user.email = this.email;
-      console.log(this.$store.state.user.email);
-      this.getUserDetails().then((res) => {
+
+      this.getUserType().then((res) => {
         this.$store.state.user.userType = res;
+        this.getUserDetails(res).then((res) => {
+          this.$store.state.user.name = res.name;
+          this.$store.state.user.points = res.points;
+          this.$store.state.user.docID = res.docID;
+          this.$store.state.user.docPath = res.docPath;
+        });
+
+        console.log(this.$store.state);
       });
     },
-    getUserDetails: async function () {
+    getUserType: async function () {
       const db = firebase.firestore();
       let userType = "";
       await db
@@ -86,8 +97,7 @@ export default {
         .get()
         .then(function (querySnapshot) {
           if (!querySnapshot.empty) {
-            console.log("c",querySnapshot );
-            userType = "citizen";
+            userType = "Citizen";
           }
         });
       await db
@@ -96,8 +106,7 @@ export default {
         .get()
         .then(function (querySnapshot) {
           if (!querySnapshot.empty) {
-             console.log("s",querySnapshot );
-            userType = "serviceProvider";
+            userType = "ServiceProvider";
           }
         });
       await db
@@ -105,12 +114,36 @@ export default {
         .where("email", "==", this.$store.state.user.email)
         .get()
         .then(function (querySnapshot) {
-           console.log("a",querySnapshot );
           if (!querySnapshot.empty) {
-            userType = "admin";
+            userType = "Admin";
           }
         });
+
       return userType;
+    },
+
+    getUserDetails: async function (userType) {
+      const db = firebase.firestore();
+      let userData = {
+        name: "",
+        points: 0,
+        docID: "",
+        docPath: ""
+      };
+      await db
+        .collection(userType+"s")
+        .where("email", "==", this.$store.state.user.email)
+        .get()
+        .then(function (querySnapshot) {
+          querySnapshot.forEach(function (doc) {
+            userData.docID = doc.id;
+            userData.docPath = "/" + userType + "s/" + doc.id;
+            userData.name = doc.data().name;
+            userData.points = doc.data().points;
+          });
+        });
+
+      return userData;
     },
   },
 };

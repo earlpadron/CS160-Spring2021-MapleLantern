@@ -24,8 +24,8 @@
                   <v-list-item-subtitle
                     >Points: {{ points }}</v-list-item-subtitle
                   >
-                  <v-list-item-subtitle v-if= isCitizen
-                    ><a v-on:click="payment()" >
+                  <v-list-item-subtitle v-if="isCitizen"
+                    ><a v-on:click="payment()">
                       Add points
                     </a></v-list-item-subtitle
                   >
@@ -80,12 +80,13 @@ export default {
       isCitizen: false,
       isVender: false,
       isAdmin: false,
-      name: "name",
-      points: 0,
+      name: this.$store.state.user.name,
+      points: this.$store.state.user.points,
     };
   },
 
   created() {
+    console.log(this.$store.state);
     this.getCardsData();
   },
   methods: {
@@ -103,25 +104,43 @@ export default {
       alert("Redirecting to post creation page");
     },
     getCardsData: async function () {
-      console.log(this.$store.state);
       const db = firebase.firestore();
       const d = [];
-      if (this.$store.state.user.userType == "citizen") {
+      if (this.$store.state.user.userType == "Citizen") {
         this.isCitizen = true;
+        let purchasedIDs;
         await db
           .collection("Citizens")
           .where("email", "==", this.$store.state.user.email)
           .get()
           .then(function (querySnapshot) {
             querySnapshot.forEach(function (doc) {
-              // console.log(doc.id, " => ", doc.data());
-              d.push({ id: doc.id, data: doc.data() });
+              purchasedIDs = doc.data().purchased.map((res) => {
+                return res.activity.id;
+              });
             });
           })
           .catch(function (error) {
             console.log("Error getting documents: ", error);
           });
-      } else if (this.$store.state.user.userType == "serviceProvider") {
+
+        for (const id of purchasedIDs) {
+          await db
+            .collection("Activities")
+            // .doc(id)
+            .where(firebase.firestore.FieldPath.documentId(), '==', id)
+            .get()
+            .then(function (querySnapshot) {
+              querySnapshot.forEach(function (doc) {
+                console.log(doc.id, " => ", doc.data());
+                d.push({ id: doc.id, data: doc.data() });
+              });
+            })
+            .catch(function (error) {
+              console.log("Error getting documents: ", error);
+            });
+        }
+      } else if (this.$store.state.user.userType == "ServiceProvider") {
         this.isVender = true;
         let docID = "";
         let userData = {
@@ -160,7 +179,7 @@ export default {
           .catch(function (error) {
             console.log("Error getting documents: ", error);
           });
-      } else if (this.$store.state.user.userType == "admin") {
+      } else if (this.$store.state.user.userType == "Admin") {
         this.isAdmin = true;
         await db
           .collection("Activities")
