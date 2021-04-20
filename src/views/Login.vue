@@ -16,7 +16,7 @@
             v-model="password"
             :rules="[rules.required, rules.counter]"
             label="Password"
-            :append-icon="pvisvalue ? 'mdi-eye' : 'mdi-eye-off'"
+            :append-icon="pvisvalue ? 'mdi-eye-off' : 'mdi-eye'"
             @click:append="() => (pvisvalue = !pvisvalue)"
             :type="pvisvalue ? 'password' : 'text'"
             required
