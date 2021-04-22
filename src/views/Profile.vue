@@ -14,7 +14,7 @@
               <v-list-item>
                 <v-list-item-avatar size="100">
                   <v-avatar class="ma-md-15 mx-md-15" color="red" size="164">
-                    <span class="white--text headline">CJ</span>
+                    <span class="white--text headline">{{initials}}</span>
                   </v-avatar>
                 </v-list-item-avatar>
                 <v-list-item-content>
@@ -83,6 +83,12 @@ export default {
       name: this.$store.state.user.name,
       points: this.$store.state.user.points,
     };
+  },
+  computed: {
+    initials() {
+      let name = this.$store.state.user.name.split(" ");
+      return name[0][0]+name[1][0]
+    }
   },
 
   created() {

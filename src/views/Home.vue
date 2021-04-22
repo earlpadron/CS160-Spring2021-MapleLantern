@@ -1,11 +1,12 @@
 <template>
   <div class="home">
     <v-container>
-      <h3>HOME</h3>
-      <button @click="logout">Log out</button>
+      <div class="text-center">
+        <h1 class="font-weight-light">Maple Lantern</h1>
+      </div>
     </v-container>
 
-    <v-container>
+    <!-- <v-container>
       <v-btn color="success" class="mr-4" @click="payment()">
         Add/Edit Payment Details
       </v-btn>
@@ -15,18 +16,19 @@
       <v-btn color="success" class="mr-4" @click="post()">
         Create A Post
       </v-btn>
-    </v-container>
+    </v-container> -->
 
     <v-app id="inspire">
       <v-app-bar app color="white" flat>
         <v-container class="py-0 fill-height">
           <v-avatar class="mr-10" color="green darken-1" size="32"
-            ><span class="white--text headline">CJ</span></v-avatar
+            ><span class="white--text headline">{{ initials }}</span></v-avatar
           >
 
           <v-btn v-for="link in links" :key="link" text @click="leave(link)">
             {{ link }}
           </v-btn>
+          <v-btn text @click="logout"> Logout </v-btn>
 
           <v-spacer></v-spacer>
 
@@ -71,11 +73,11 @@
                     <activity-card
                       class="ma-md-1 mx-md-1"
                       :description="n.data.description"
-                      :cost=n.data.cost
+                      :cost="n.data.cost"
                       :activityName="n.data.name"
                       :eventStart="n.data.eventDateStart"
                       :eventEnd="n.data.eventDateEnd"
-                      :categories=n.data.category
+                      :categories="n.data.category"
                       :isActivityCard="true"
                     />
                   </v-col>
@@ -103,7 +105,7 @@ export default {
 
   data() {
     return {
-      links: ["browse", "schedule", "profile", "settings"],
+      links: ["payment", "post", "profile", "settings"],
       categories: [
         "Volunteering",
         "Tutoring",
@@ -118,6 +120,7 @@ export default {
         page: 1,
         perPage: 8,
       },
+      name: this.$store.state.user.name,
     };
   },
   async created() {
@@ -125,7 +128,7 @@ export default {
     const d = [];
     await db
       .collection("Activities")
-      .where('adminApproved','==',true)
+      .where("adminApproved", "==", true)
       .get()
       .then(function (querySnapshot) {
         querySnapshot.forEach(function (doc) {
@@ -147,6 +150,10 @@ export default {
         (this.pagination.page - 1) * this.pagination.perPage,
         this.pagination.page * this.pagination.perPage
       );
+    },
+    initials() {
+      let name = this.$store.state.user.name.split(" ");
+      return name[0][0] + name[1][0];
     },
   },
 
@@ -232,10 +239,10 @@ export default {
       this.$store.state.activities = d;
     },
 
-    payment: function () {
-      this.$router.replace("/payment");
-      alert("Redirecting to payment details page");
-    },
+    // payment: function () {
+    //   this.$router.replace("/payment");
+    //   alert("Redirecting to payment details page");
+    // },
     filter: function (n) {
       console.log(n);
     },
