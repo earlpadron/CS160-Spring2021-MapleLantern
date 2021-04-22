@@ -6,18 +6,6 @@
       </div>
     </v-container>
 
-    <!-- <v-container>
-      <v-btn color="success" class="mr-4" @click="payment()">
-        Add/Edit Payment Details
-      </v-btn>
-    </v-container>
-
-    <v-container>
-      <v-btn color="success" class="mr-4" @click="post()">
-        Create A Post
-      </v-btn>
-    </v-container> -->
-
     <v-app id="inspire">
       <v-app-bar app color="white" flat>
         <v-container class="py-0 fill-height">
@@ -43,6 +31,7 @@
               solo-inverted
             ></v-text-field>
           </v-responsive>
+          <v-btn text @click="search()"> Search </v-btn>
         </v-container>
       </v-app-bar>
 
@@ -142,6 +131,7 @@ export default {
       });
 
     this.res = d;
+    this.$store.state.allActivities = this.res;
   },
 
   computed: {
@@ -171,35 +161,18 @@ export default {
       this.$router.replace("/post");
       alert("Redirecting to post creation page");
     },
-    search: async function () {
-      const db = firebase.firestore();
-      const keywords = this.search.split(/(\s+)/);
-      let fromName = db
-        .collection("Activities")
-        .whereContains("name", keywords);
-      let fromDesc = db
-        .collection("Activities")
-        .whereContains("description", keywords);
-      let fromCat = db
-        .collection("Activities")
-        .where("category", "array-contains-any", keywords);
+    search: function () {
+      const keywords = this.searchKeywords.split(/(\s+)/);
 
-      const [nameRes, descRes, catRes] = await Promise.all([
-        fromName,
-        fromDesc,
-        fromCat,
-      ])
-        .get()
-        .then(function (querySnapshot) {
-          querySnapshot.forEach(function (doc) {
-            // doc.data() is never undefined for query doc snapshots
-            // console.log(doc.id, " => ", doc.data());
-          });
-        })
-        .catch(function (error) {
-          console.log("Error getting documents: ", error);
-        });
-      const allRes = nameRes.concat(descRes).concat(catRes);
+      let d = [];
+      this.$store.state.allActivities.forEach(activity => {
+        if((activity.data.name? activity.data.name.split(/(\s+)/).some(r=> keywords.includes(r)): false) || 
+          (activity.data.description? activity.data.description.split(/(\s+)/).some(r=> keywords.includes(r)): false)){
+            d.push(activity);
+          }
+      });
+      this.res = d;
+      this.$store.state.activities = d;
     },
 
     catFilter: async function (n) {
@@ -239,10 +212,6 @@ export default {
       this.$store.state.activities = d;
     },
 
-    // payment: function () {
-    //   this.$router.replace("/payment");
-    //   alert("Redirecting to payment details page");
-    // },
     filter: function (n) {
       console.log(n);
     },
