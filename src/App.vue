@@ -1,8 +1,8 @@
 <template>
   <v-app>
-    <v-app-bar
+    <!-- <v-app-bar
       app
-      color="primary"
+      color="light green"
       dark
     >
       <div class="d-flex align-center">
@@ -21,28 +21,44 @@
             contain
             min-width="100"
             :src="require('./assets/Title.png')"
-            width="240"
+            width="100"
             to='/home'
           />
         </router-link>
       </div>
 
       <v-spacer></v-spacer>
+    </v-app-bar> -->
+    <v-app-bar app color="white">
+      <v-container class="py-0 fill-height">
+        <v-btn v-for="link in links" :key="link" text @click="leave(link)">
+          {{ link }}
+        </v-btn>
+        <v-btn text @click="logout"> Logout </v-btn>
+
+        <v-spacer></v-spacer>
+      </v-container>
+      <v-spacer></v-spacer>
     </v-app-bar>
 
     <v-main>
-      <router-view/>
+      <router-view />
     </v-main>
   </v-app>
 </template>
 
 <script>
-
 export default {
-  name: 'App',
+  name: "App",
 
   data: () => ({
-    //
+    links: ["home", "post", "profile", "settings"],
   }),
+  methods: {
+    leave: function (n) {
+      this.$router.replace(`/${n}`);
+      alert(`Redirecting to ${n} page`);
+    },
+  },
 };
 </script>

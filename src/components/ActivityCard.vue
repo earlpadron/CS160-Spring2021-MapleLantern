@@ -7,8 +7,8 @@
 
     <v-card-title> {{ activityName }} </v-card-title>
 
-    <v-card-subtitle> {{ cost }} points </v-card-subtitle>
-    <v-card-subtitle> {{ categories }} </v-card-subtitle>
+    <v-card-subtitle> Cost:{{ cost }} points </v-card-subtitle>
+    <v-card-subtitle> Categories: {{ categories }} </v-card-subtitle>
     <v-card-actions v-if="isActivityCard">
       <v-btn color="orange lighten-2" text @click="show = !show">
         Details
@@ -44,7 +44,7 @@
       <div v-show="show">
         <v-divider></v-divider>
 
-        <v-card-text> {{ description }} </v-card-text>
+        <v-card-text>{{ description }} </v-card-text>
       </div>
     </v-expand-transition>
   </v-card>
