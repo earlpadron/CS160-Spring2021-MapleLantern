@@ -8,7 +8,7 @@
         </v-btn>
         <v-btn text @click="logout"> Logout </v-btn>
         </div>
-        <div v-else>
+        <div v-else @click="leave('home')">
           <h2 class="font-weight-light" id="name" text>Maple Lantern</h2>
         </div>
         <v-spacer></v-spacer>
@@ -32,13 +32,16 @@ export default {
     loggedIn: false,
   }),
 
-  created() {
-    var user = firebase.auth().currentUser;
+  watch: {
+    loggedIn: function(){
+      var user = firebase.auth().currentUser;
 
-    if (user) {
-      // User is signed in.
-      this.loggedIn = true;
+      if (user) {
+        // User is signed in.
+        this.loggedIn = true;
+      }
     }
+
     //  else {
     //   // No user is signed in.
     // }

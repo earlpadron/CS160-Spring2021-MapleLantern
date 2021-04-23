@@ -85,6 +85,7 @@ export default {
             name: name,
             points: 0,
             purchased: [],
+            locked: false,
           })
           .then(() => {
             console.log("Document added successfully!");

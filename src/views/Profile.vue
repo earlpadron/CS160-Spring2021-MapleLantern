@@ -14,14 +14,14 @@
               <v-list-item>
                 <v-list-item-avatar size="100">
                   <v-avatar class="ma-md-15 mx-md-15" color="red" size="164">
-                    <span class="white--text headline">{{initials}}</span>
+                    <span class="white--text headline">{{ initials }}</span>
                   </v-avatar>
                 </v-list-item-avatar>
                 <v-list-item-content>
                   <v-list-item-title class="title" style="margin-top: 10px">{{
                     name
                   }}</v-list-item-title>
-                  <v-list-item-subtitle v-if ="isCitizen || isVender" 
+                  <v-list-item-subtitle v-if="isCitizen || isVender"
                     >Points: {{ points }}</v-list-item-subtitle
                   >
                   <v-list-item-subtitle v-if="isCitizen"
@@ -61,6 +61,39 @@
               </div>
             </v-slide-item>
           </v-slide-group>
+          <div class="text-center">
+            <h1 class="font-weight-light">Lock User</h1>
+          </div>
+          <v-form v-model="valid">
+            <v-container>
+              <v-row>
+                <v-col cols="12" md="4">
+                  <v-text-field
+                    v-model="lockedUserEmail"
+                    :rules="emailRules"
+                    label="E-mail"
+                    required
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="12" md="4">
+                  <v-select
+                    v-model="userType"
+                    :items="userTypes"
+                    :error-messages="selectErrors"
+                    label="User Type"
+                    required
+                    @change="$v.select.$touch()"
+                    @blur="$v.select.$touch()"
+                  ></v-select>
+                </v-col>
+                <v-col cols="12" md="4">
+                  <v-btn class="mr-4" type="submit" @click="getUserFromEmail"
+                    >Confirm</v-btn
+                  >
+                </v-col>
+              </v-row>
+            </v-container>
+          </v-form>
         </v-sheet>
       </v-main>
     </v-app>
@@ -82,13 +115,16 @@ export default {
       isAdmin: false,
       name: this.$store.state.user.name,
       points: this.$store.state.user.points,
+      lockedUserEmail: "",
+      userTypes: ["Citizen", "ServiceProvider"],
+      userType: "",
     };
   },
   computed: {
     initials() {
       let name = this.$store.state.user.name.split(" ");
-      return name[0][0]+name[1][0]
-    }
+      return name[0][0] + name[1][0];
+    },
   },
 
   created() {
@@ -134,7 +170,7 @@ export default {
           await db
             .collection("Activities")
             // .doc(id)
-            .where(firebase.firestore.FieldPath.documentId(), '==', id)
+            .where(firebase.firestore.FieldPath.documentId(), "==", id)
             .get()
             .then(function (querySnapshot) {
               querySnapshot.forEach(function (doc) {
@@ -166,7 +202,7 @@ export default {
             });
           });
 
-        const vendor = "/ServiceProivders/" + docID;
+        const vendor = "/ServiceProviders/" + docID;
         this.$store.state.user.name = userData.name;
         this.$store.state.user.points = userData.points;
         this.name = this.$store.state.user.name;
@@ -207,6 +243,24 @@ export default {
 
     payment: function () {
       this.$router.replace("/payment");
+    },
+
+    getUserFromEmail: async function () {
+      const db = firebase.firestore();
+      await db.collection(this.userType + "s")
+        .where("email", "==", this.lockedUserEmail)
+        .get()
+        .then(function (querySnapshot) {
+          querySnapshot.forEach(function (doc) {
+            console.log({ id: doc.id, data: doc.data() });
+            doc.ref.update({
+              locked: true,
+            });
+          });
+        })
+        .catch(function (error) {
+          console.log("Error getting documents: ", error);
+        });
     },
   },
 };
