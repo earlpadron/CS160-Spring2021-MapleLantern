@@ -62,12 +62,12 @@
             </v-slide-item>
           </v-slide-group>
           <div class="text-center">
-            <h1 class="font-weight-light">Lock User</h1>
+            <h1 class="font-weight-light">User Management</h1>
           </div>
           <v-form v-model="valid">
             <v-container>
               <v-row>
-                <v-col cols="12" md="4">
+                <v-col cols="6" md="4">
                   <v-text-field
                     v-model="lockedUserEmail"
                     :rules="emailRules"
@@ -75,7 +75,7 @@
                     required
                   ></v-text-field>
                 </v-col>
-                <v-col cols="12" md="4">
+                <v-col cols="6" md="4">
                   <v-select
                     v-model="userType"
                     :items="userTypes"
@@ -84,11 +84,23 @@
                     required
                     @change="$v.select.$touch()"
                     @blur="$v.select.$touch()"
-                  ></v-select>
+                  > </v-select>
                 </v-col>
-                <v-col cols="12" md="4">
-                  <v-btn class="mr-4" type="submit" @click="getUserFromEmail"
-                    >Confirm</v-btn
+                   <v-col cols="6" md="4">
+                  <v-select
+                    v-model="userAction"
+                    :items="userActions"
+                    :error-messages="selectErrors"
+                    label="User Type"
+                    required
+                    @change="$v.select.$touch()"
+                    @blur="$v.select.$touch()"
+                  ></v-select>
+                   </v-col>
+                
+                <v-col cols="6" md="4">
+                  <v-btn class="mr-4" type="submit" @click="manageUser"
+                    >Submit</v-btn
                   >
                 </v-col>
               </v-row>
@@ -118,6 +130,8 @@ export default {
       lockedUserEmail: "",
       userTypes: ["Citizen", "ServiceProvider"],
       userType: "",
+      userActions : ["Locked", "Create", "Delete"],
+      userAction: "",
     };
   },
   computed: {
@@ -245,8 +259,10 @@ export default {
       this.$router.replace("/payment");
     },
 
-    getUserFromEmail: async function () {
+    manageUser: async function () {
       const db = firebase.firestore();
+
+     if(this.userAction == "Locked"){
       await db.collection(this.userType + "s")
         .where("email", "==", this.lockedUserEmail)
         .get()
@@ -261,6 +277,24 @@ export default {
         .catch(function (error) {
           console.log("Error getting documents: ", error);
         });
+     }
+     else if(this.userAction == "Create"){
+       this.$router.replace("/sign-up");
+     }
+     else if(this.userAction == "Delete"){
+        await db.collection(this.userType + "s")
+        .where("email", "==", this.lockedUserEmail)
+        .get()
+        .then(function (querySnapshot) {
+          querySnapshot.forEach(function (doc) {
+            console.log({ id: doc.id, data: doc.data() });
+            doc.ref.delete();
+          });
+        })
+        .catch(function (error) {
+          console.log("Error getting documents: ", error);
+        });
+     }
     },
   },
 };
