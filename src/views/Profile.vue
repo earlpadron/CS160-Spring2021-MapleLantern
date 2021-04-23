@@ -61,6 +61,7 @@
               </div>
             </v-slide-item>
           </v-slide-group>
+          <div v-if="isAdmin">
           <div class="text-center">
             <h1 class="font-weight-light">User Management</h1>
           </div>
@@ -69,7 +70,7 @@
               <v-row>
                 <v-col cols="6" md="4">
                   <v-text-field
-                    v-model="lockedUserEmail"
+                    v-model="userFormEmail"
                     :rules="emailRules"
                     label="E-mail"
                     required
@@ -106,6 +107,7 @@
               </v-row>
             </v-container>
           </v-form>
+          </div>
         </v-sheet>
       </v-main>
     </v-app>
@@ -127,10 +129,10 @@ export default {
       isAdmin: false,
       name: this.$store.state.user.name,
       points: this.$store.state.user.points,
-      lockedUserEmail: "",
+      userFormEmail: "",
       userTypes: ["Citizen", "ServiceProvider"],
       userType: "",
-      userActions : ["Locked", "Create", "Delete"],
+      userActions : ["Locked", "Create", "Delete","Reset Password"],
       userAction: "",
     };
   },
@@ -259,12 +261,20 @@ export default {
       this.$router.replace("/payment");
     },
 
+    resetPassword: function() {
+      const auth = firebase.auth();
+      auth.sendPasswordResetEmail(this.userFormEmail).then(() => {
+        alert("Password Email Reset Sent.");
+        }).catch((error) => {console.error(error);
+      });
+    },
+
     manageUser: async function () {
       const db = firebase.firestore();
 
      if(this.userAction == "Locked"){
       await db.collection(this.userType + "s")
-        .where("email", "==", this.lockedUserEmail)
+        .where("email", "==", this.userFormEmail)
         .get()
         .then(function (querySnapshot) {
           querySnapshot.forEach(function (doc) {
@@ -283,7 +293,7 @@ export default {
      }
      else if(this.userAction == "Delete"){
         await db.collection(this.userType + "s")
-        .where("email", "==", this.lockedUserEmail)
+        .where("email", "==", this.userFormEmail)
         .get()
         .then(function (querySnapshot) {
           querySnapshot.forEach(function (doc) {
@@ -294,6 +304,9 @@ export default {
         .catch(function (error) {
           console.log("Error getting documents: ", error);
         });
+     }
+     else if(this.userAction == "Reset Password"){
+       this.resetPassword();
      }
     },
   },
