@@ -63,7 +63,7 @@ export default {
     return {
       show: false,
       //set address to actual event address 
-      address: "200 S Mathilda Ave, Sunnyvale, CA",
+      location: "200 S Mathilda Ave, Sunnyvale, CA",
     };
   },
   props: {
@@ -78,6 +78,7 @@ export default {
     isProfileCard: Boolean,
     isVenderCard: Boolean,
     isAdminCard: Boolean,
+    address: String,
   },
   methods: {
     purchase: function () {},

@@ -77,6 +77,7 @@
                       :eventEnd="n.data.eventDateEnd"
                       :categories=n.data.category
                       :isActivityCard="true"
+                      :address="n.data.address"
                     />
                   </v-col>
                 </v-row>

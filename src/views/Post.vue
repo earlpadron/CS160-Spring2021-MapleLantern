@@ -78,6 +78,12 @@ use this package: https://stackoverflow.com/questions/58228404/implement-datetim
             required
           ></v-text-field>
 
+          <v-text-field
+            v-model="Location"
+            label="Location"
+            required
+          ></v-text-field>
+
           <v-textarea
             v-model="Description"
             label="Description"
@@ -127,6 +133,7 @@ export default {
       Description: "",
       cost: 0,
       Upload: null,
+      Location: "",
     };
   },
   computed: {
@@ -165,6 +172,7 @@ export default {
           eventDateStart: this.fromDateVal,
           name: this.Name,
           provider: user,
+          address: this.Location,
         })
         .then(() => {
           console.log("Successfully added the activity");
