@@ -43,8 +43,12 @@
     <v-expand-transition>
       <div v-show="show">
         <v-divider></v-divider>
-
         <v-card-text> {{ description }} </v-card-text>
+        
+          <router-link :to="{ name: 'MapView', params: { query2: address }}">
+            <v-btn class="ma-5">Location</v-btn>
+          </router-link>
+        <!-- </v-btn> -->
       </div>
     </v-expand-transition>
   </v-card>
@@ -58,6 +62,8 @@ export default {
   data() {
     return {
       show: false,
+      //set address to actual event address 
+      address: "200 S Mathilda Ave, Sunnyvale, CA",
     };
   },
   props: {
