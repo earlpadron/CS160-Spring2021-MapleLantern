@@ -72,11 +72,14 @@ use this package: https://stackoverflow.com/questions/58228404/implement-datetim
             </v-menu>
           </v-layout>
 
-          <v-text-field
+          <v-overflow-btn
             v-model="AgeGroup"
-            label="Age Group"
+            :items="ages"
+            item-text="ages"
+            label="Select an Age Group"
+            single-line
             required
-          ></v-text-field>
+          ></v-overflow-btn>
 
           <v-text-field
             v-model="Location"
@@ -122,6 +125,17 @@ export default {
     return {
       fromDateMenu: false,
       toDateMenu: false,
+
+      ages: [
+          { ages: 'Toddlers: 0-3'},
+          { ages: 'Kids: 4-8'},
+          { ages: 'Pre-Teens: 9-12'},
+          { ages: 'Adolescent: 13-18'},
+          { ages: 'Young Adults: 19-30'},
+          { ages: 'Adults: 31-59'},
+          { ages: 'Senior Citizens: 60+'},
+          { ages: 'All Ages'}
+        ],
 
       minDate: "2020-07-04",
       maxDate: "2030-08-30",
