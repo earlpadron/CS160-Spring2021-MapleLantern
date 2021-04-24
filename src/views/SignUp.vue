@@ -115,16 +115,15 @@ export default {
         .auth()
         .createUserWithEmailAndPassword(this.email, this.password)
         .then(() => {
+          this.addUser(this.name, this.email, this.userType);
           this.$router.push("/home");
           alert("Your account has been created!");
         })
         .catch((error) => {
           alert(error.message);
         });
-
-      this.addUser(this.name, this.email, this.userType);
-    },
-  },
+    }
+  }
 };
 </script>
 
