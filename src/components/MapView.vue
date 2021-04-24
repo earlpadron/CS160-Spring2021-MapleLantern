@@ -22,7 +22,6 @@ export default {
     
   },
   async mounted() {
-    // Initialize the platform object:
     const platform = new window.H.service.Platform({
       apikey: this.apikey
     });

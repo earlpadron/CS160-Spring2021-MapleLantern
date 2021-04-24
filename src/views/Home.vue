@@ -9,12 +9,46 @@
       <v-btn color="success" class="mr-4" @click="payment()">
         Add/Edit Payment Details
       </v-btn>
+
+      <v-tooltip right>
+        <template v-slot:activator="{ on, attrs }">
+          <v-icon
+            color="green"
+            dark
+            v-bind="attrs"
+            v-on="on"
+          >
+            mdi-information
+          </v-icon>
+        </template>
+        <span>Points are an in-app currency used to purchase activities. Click here<br/>
+              to purchase points. When registering, the activity cost will automatically be <br/>
+              deducted from that user’s total points.
+        </span>
+      </v-tooltip>
+
     </v-container>
 
     <v-container>
       <v-btn color="success" class="mr-4" @click="post()">
         Create A Post
       </v-btn>
+
+      <v-tooltip right>
+        <template v-slot:activator="{ on, attrs }">
+          <v-icon
+            color="green"
+            dark
+            v-bind="attrs"
+            v-on="on"
+          >
+            mdi-information
+          </v-icon>
+        </template>
+        <span>Have an activity you want to share? Click here to set <br/> 
+              up and create a post <br/> 
+        </span>
+      </v-tooltip>
     </v-container>
 
     <v-app id="inspire">
