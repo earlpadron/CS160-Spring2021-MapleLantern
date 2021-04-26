@@ -18,13 +18,11 @@
                   </v-avatar>
                 </v-list-item-avatar>
                 <v-list-item-content>
-                  <v-list-item-title class="title" style="margin-top: 10px">{{
-                    name
-                  }}</v-list-item-title>
-                  <v-list-item-subtitle v-if ="isCitizen || isVender" 
+                  <v-list-item-title class="title" style="margin-top: 10px">{{ name }}</v-list-item-title>
+                  <v-list-item-subtitle v-if="userType == 'Citizen' || userType == 'Service Provider'" 
                     >Points: {{ points }}</v-list-item-subtitle
                   >
-                  <v-list-item-subtitle v-if="isCitizen"
+                  <v-list-item-subtitle v-if="userType == 'Citizen'"
                     ><a v-on:click="payment()">
                       Add points
                     </a></v-list-item-subtitle
@@ -77,11 +75,10 @@ export default {
   data() {
     return {
       model: null,
-      isCitizen: false,
-      isVender: false,
+      userType: this.$store.state.user.userType,
       isAdmin: false,
       name: this.$store.state.user.name,
-      points: this.$store.state.user.points,
+      points: this.$store.state.user.points
     };
   },
 
@@ -89,6 +86,7 @@ export default {
     console.log(this.$store.state);
     this.getCardsData();
   },
+
   methods: {
     logout: function () {
       firebase
@@ -107,7 +105,7 @@ export default {
       const db = firebase.firestore();
       const d = [];
       if (this.$store.state.user.userType == "Citizen") {
-        this.isCitizen = true;
+        //this.isCitizen = true;
         let purchasedIDs;
         await db
           .collection("Citizens")
@@ -141,7 +139,7 @@ export default {
             });
         }
       } else if (this.$store.state.user.userType == "ServiceProvider") {
-        this.isVender = true;
+        //this.isVender = true;
         let docID = "";
         let userData = {
           name: "",
@@ -200,7 +198,7 @@ export default {
     },
 
     payment: function () {
-      this.$router.replace("/payment");
+      this.$router.replace("/addpoints");
     },
   },
 };
