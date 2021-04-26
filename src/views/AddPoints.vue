@@ -25,7 +25,6 @@
           <h1>Purchase Points</h1>
 
           <v-list-item-content>
-                  <v-list-item-title class="title" style="margin-top: 10px">whyyyy: {{ user }}</v-list-item-title>
                   <v-list-item-title class="title" style="margin-top: 10px">How many points would you like to purchase?</v-list-item-title>
           </v-list-item-content>
           
@@ -70,6 +69,7 @@
         user: this.$store.state.user.email,
         test: 4,
         Purchasedpoints: null,
+        prevpoints: this.$store.state.user.points,
         docID: this.$store.state.user.docID,
         points: [
           { Points: 10},
@@ -91,10 +91,8 @@
 
         docRef.get().then((doc) => {
             if (doc.exists) {
-                //need to add prev points to purchased points
-                //var temp = citizens.doc(this.docID).get("points")+this.Points
                 citizens.doc(this.docID).update({
-                    "points": this.Points
+                    "points": this.Points + this.prevpoints
                 })
                 alert("Purchase Successful!");
             } else {
