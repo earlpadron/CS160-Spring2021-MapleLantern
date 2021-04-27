@@ -159,7 +159,6 @@ export default {
         page: 1,
         perPage: 8,
       },
-      name: this.$store.state.user.name,
     };
   },
   async created() {
@@ -192,8 +191,12 @@ export default {
       );
     },
     initials() {
-      let name = this.$store.state.user.name.split(" ");
-      return name[0][0] + name[1][0];
+      if(this.$store.state.user){
+        let name = this.$store.state.user.name.split(" ");
+        return name[0][0] + name[1][0];
+      } else{
+        return "U";
+      }
     },
   },
 

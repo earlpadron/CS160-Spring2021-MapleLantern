@@ -21,7 +21,7 @@ const router = new Router({
     routes: [
         {
             path: '*',
-            redirect: '/login'
+            redirect: '/home'
         },
         {
             path: '/',
@@ -33,9 +33,6 @@ const router = new Router({
             path: '/home',
             name: 'home',
             component: Home,
-            meta: {
-                requiresAuth: true
-            }
         },
         {
             path: '/login',
@@ -50,7 +47,10 @@ const router = new Router({
         {
             path: '/post',
             name: 'Post',
-            component: Post
+            component: Post,
+            meta: {
+                requiresAuth: true
+            }
         },
         {
             path: '/browse',
@@ -60,17 +60,26 @@ const router = new Router({
         {
             path: '/settings',
             name: 'Settings',
-            component: Settings
+            component: Settings,
+            meta: {
+                requiresAuth: true
+            }
         },
         {
             path: '/schedule',
             name: 'Schedule',
-            component: Schedule
+            component: Schedule,
+            meta: {
+                requiresAuth: true
+            }
         },
         {
             path: '/profile',
             name: 'Profile',
-            component: Profile
+            component: Profile,
+            meta: {
+                requiresAuth: true
+            }
         },
         {
             path: '/map-view',
@@ -81,12 +90,18 @@ const router = new Router({
         {
             path: '/addpoints',
             name: 'AddPoints',
-            component: AddPoints
+            component: AddPoints,
+            meta: {
+                requiresAuth: true
+            }
         },
         {
             path: '/payment',
             name: 'Payment',
-            component: Payment
+            component: Payment,
+            meta: {
+                requiresAuth: true
+            }
         }
     ]
 });
