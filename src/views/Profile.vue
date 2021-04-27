@@ -77,7 +77,7 @@
                 </v-col>
                 <v-col cols="6" md="4">
                   <v-select
-                    v-model="userType"
+                    v-model="user_type"
                     :items="userTypes"
                     :error-messages="selectErrors"
                     label="User Type"
@@ -129,7 +129,7 @@ export default {
       points: this.$store.state.user.points,
       userFormEmail: "",
       userTypes: ["Citizen", "ServiceProvider"],
-      userType: "",
+      user_type: "",
       userActions : ["Locked", "Create", "Delete","Reset Password"],
       userAction: "",
     };
@@ -272,7 +272,7 @@ export default {
       const db = firebase.firestore();
 
      if(this.userAction == "Locked"){
-      await db.collection(this.userType + "s")
+      await db.collection(this.user_type + "s")
         .where("email", "==", this.userFormEmail)
         .get()
         .then(function (querySnapshot) {
@@ -291,7 +291,7 @@ export default {
        this.$router.replace("/sign-up");
      }
      else if(this.userAction == "Delete"){
-        await db.collection(this.userType + "s")
+        await db.collection(this.user_type + "s")
         .where("email", "==", this.userFormEmail)
         .get()
         .then(function (querySnapshot) {
