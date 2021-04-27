@@ -39,10 +39,10 @@
       <div v-show="show">
         <v-divider></v-divider>
         <v-card-text> {{ description }} </v-card-text>
-        
-          <router-link :to="{ name: 'MapView', params: { query2: address }}">
-            <v-btn class="ma-5">Location</v-btn>
-          </router-link>
+
+        <router-link :to="{ name: 'MapView', params: { query2: address } }">
+          <v-btn class="ma-5">Location</v-btn>
+        </router-link>
         <!-- </v-btn> -->
       </div>
     </v-expand-transition>
@@ -58,9 +58,12 @@ export default {
   data() {
     return {
       show: false,
-      //set address to actual event address 
+      //set address to actual event address
       location: "200 S Mathilda Ave, Sunnyvale, CA",
     };
+  },
+  mounted() {
+    console.log({ router: this.$router });
   },
   props: {
     activityName: String,
@@ -78,10 +81,27 @@ export default {
     id: String,
   },
   methods: {
-    purchase: function () {},
+    leave: function () {
+      this.$router.replace("/login");
+      alert(`Redirecting to login page`);
+    },
+    purchase: function () {
+      let currentUser;
+      firebase.auth().onAuthStateChanged(function (user) {
+        currentUser = user;
+      });
+      if (currentUser) {
+        // User is signed in.
+      } else {
+        // No user is signed in.
+        this.$router.replace("/login");
+        alert(`Redirecting to login page`);
+      }
+    },
     approve: async function () {
       console.log(this.$props.id);
       const db = firebase.firestore();
+
       await db
         .collection("Activities")
         .doc(this.$props.id)
