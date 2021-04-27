@@ -57,6 +57,7 @@
                   :isProfileCard="isCitizen"
                   :isVenderCard="isVender"
                   :isAdminCard="isAdmin"
+                  :id="n.id"
                 />
               </div>
             </v-slide-item>
@@ -241,7 +242,7 @@ export default {
         this.isAdmin = true;
         await db
           .collection("Activities")
-          .where("adminApproved", "==", false)
+          .where("approved", "==", false)
           .get()
           .then(function (querySnapshot) {
             querySnapshot.forEach(function (doc) {

@@ -4,9 +4,8 @@
       src="https://cdn.vuetifyjs.com/images/cards/sunshine.jpg"
       height="200px"
     ></v-img>
-
+    <v-card-subtitle> ID:{{ id }} </v-card-subtitle>
     <v-card-title> {{ activityName }} </v-card-title>
-
     <v-card-subtitle> Cost:{{ cost }} points </v-card-subtitle>
     <v-card-subtitle> Categories: {{ categories }} </v-card-subtitle>
     <v-card-actions v-if="isActivityCard">
@@ -31,12 +30,8 @@
     </v-card-actions>
 
     <v-card-actions v-if="isAdminCard">
-      <v-btn color="green lighten-2" text>
-        Approve
-      </v-btn>
-      <v-btn color="red lighten-2" text>
-        Deny
-      </v-btn>
+      <v-btn color="green lighten-2" text @click="approve()"> Approve </v-btn>
+      <v-btn color="red lighten-2" text @click="deny()"> Deny </v-btn>
       <v-spacer></v-spacer>
     </v-card-actions>
 
@@ -53,6 +48,7 @@
 
 
 <script>
+import firebase from "firebase";
 export default {
   name: "ActivityCard",
   data() {
@@ -72,9 +68,51 @@ export default {
     isProfileCard: Boolean,
     isVenderCard: Boolean,
     isAdminCard: Boolean,
+    id: String,
   },
   methods: {
     purchase: function () {},
+    approve: async function () {
+      console.log(this.$props.id);
+      const db = firebase.firestore();
+      await db
+        .collection("Activities")
+        .doc(this.$props.id)
+        .get()
+        .then(function (doc) {
+          if (doc.exists) {
+            doc.ref.update({
+              approved: true,
+              adminApproved: true,
+            });
+          } else {
+            console.log("No such document!");
+          }
+        })
+        .catch(function (error) {
+          console.log("Error getting documents: ", error);
+        });
+    },
+    deny: async function () {
+      const db = firebase.firestore();
+      await db
+        .collection("Activities")
+        .doc(this.$props.id)
+        .get()
+        .then(function (doc) {
+          if (doc.exists) {
+            doc.ref.update({
+              approved: true,
+              adminApproved: false,
+            });
+          } else {
+            console.log("No such document!");
+          }
+        })
+        .catch(function (error) {
+          console.log("Error getting documents: ", error);
+        });
+    },
   },
 };
 </script>

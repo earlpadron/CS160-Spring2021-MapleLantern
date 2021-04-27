@@ -61,6 +61,7 @@
                   <v-col v-for="n of visiblePages" :key="n.name">
                     <activity-card
                       class="ma-md-1 mx-md-1"
+                      :id="n.id"
                       :description="n.data.description"
                       :cost="n.data.cost"
                       :activityName="n.data.name"
