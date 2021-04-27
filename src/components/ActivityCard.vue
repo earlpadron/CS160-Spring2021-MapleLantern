@@ -4,7 +4,7 @@
       src="https://cdn.vuetifyjs.com/images/cards/sunshine.jpg"
       height="200px"
     ></v-img>
-    <v-card-subtitle> ID:{{ id }} </v-card-subtitle>
+
     <v-card-title> {{ activityName }} </v-card-title>
     <v-card-subtitle> Cost:{{ cost }} points </v-card-subtitle>
     <v-card-subtitle> Categories: {{ categories }} </v-card-subtitle>
