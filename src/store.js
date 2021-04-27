@@ -11,7 +11,9 @@ export default new Vuex.Store({
             points: 0,
             name:"",
             docID: "",
-            docPath:""
+            docPath:"",
+            allActivities:[],
+            activities:[]
         },
         activities:[]
     },

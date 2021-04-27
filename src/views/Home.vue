@@ -49,18 +49,22 @@
               up and create a post <br/> 
         </span>
       </v-tooltip>
+      <div class="text-center">
+        <h1 class="font-weight-light">Maple Lantern</h1>
+      </div>
     </v-container>
 
     <v-app id="inspire">
       <v-app-bar app color="white" flat>
         <v-container class="py-0 fill-height">
           <v-avatar class="mr-10" color="green darken-1" size="32"
-            ><span class="white--text headline">CJ</span></v-avatar
+            ><span class="white--text headline">{{ initials }}</span></v-avatar
           >
 
           <v-btn v-for="link in links" :key="link" text @click="leave(link)">
             {{ link }}
           </v-btn>
+          <v-btn text @click="logout"> Logout </v-btn>
 
           <v-spacer></v-spacer>
 
@@ -75,6 +79,7 @@
               solo-inverted
             ></v-text-field>
           </v-responsive>
+          <v-btn text @click="search()"> Search </v-btn>
         </v-container>
       </v-app-bar>
 
@@ -104,12 +109,13 @@
                   <v-col v-for="n of visiblePages" :key="n.name">
                     <activity-card
                       class="ma-md-1 mx-md-1"
+                      :id="n.id"
                       :description="n.data.description"
-                      :cost=n.data.cost
+                      :cost="n.data.cost"
                       :activityName="n.data.name"
                       :eventStart="n.data.eventDateStart"
                       :eventEnd="n.data.eventDateEnd"
-                      :categories=n.data.category
+                      :categories="n.data.category"
                       :isActivityCard="true"
                       :address="n.data.address"
                     />
@@ -138,7 +144,7 @@ export default {
 
   data() {
     return {
-      links: ["browse", "schedule", "profile", "settings"],
+      links: ["payment", "post", "profile", "settings"],
       categories: [
         "Volunteering",
         "Tutoring",
@@ -153,6 +159,7 @@ export default {
         page: 1,
         perPage: 8,
       },
+      name: this.$store.state.user.name,
     };
   },
   async created() {
@@ -160,7 +167,7 @@ export default {
     const d = [];
     await db
       .collection("Activities")
-      .where('adminApproved','==',true)
+      .where("adminApproved", "==", true)
       .get()
       .then(function (querySnapshot) {
         querySnapshot.forEach(function (doc) {
@@ -174,6 +181,7 @@ export default {
       });
 
     this.res = d;
+    this.$store.state.allActivities = this.res;
   },
 
   computed: {
@@ -182,6 +190,10 @@ export default {
         (this.pagination.page - 1) * this.pagination.perPage,
         this.pagination.page * this.pagination.perPage
       );
+    },
+    initials() {
+      let name = this.$store.state.user.name.split(" ");
+      return name[0][0] + name[1][0];
     },
   },
 
@@ -199,35 +211,18 @@ export default {
       this.$router.replace("/post");
       alert("Redirecting to post creation page");
     },
-    search: async function () {
-      const db = firebase.firestore();
-      const keywords = this.search.split(/(\s+)/);
-      let fromName = db
-        .collection("Activities")
-        .whereContains("name", keywords);
-      let fromDesc = db
-        .collection("Activities")
-        .whereContains("description", keywords);
-      let fromCat = db
-        .collection("Activities")
-        .where("category", "array-contains-any", keywords);
+    search: function () {
+      const keywords = this.searchKeywords.split(/(\s+)/);
 
-      const [nameRes, descRes, catRes] = await Promise.all([
-        fromName,
-        fromDesc,
-        fromCat,
-      ])
-        .get()
-        .then(function (querySnapshot) {
-          querySnapshot.forEach(function (doc) {
-            // doc.data() is never undefined for query doc snapshots
-            // console.log(doc.id, " => ", doc.data());
-          });
-        })
-        .catch(function (error) {
-          console.log("Error getting documents: ", error);
-        });
-      const allRes = nameRes.concat(descRes).concat(catRes);
+      let d = [];
+      this.$store.state.allActivities.forEach(activity => {
+        if((activity.data.name? activity.data.name.split(/(\s+)/).some(r=> keywords.includes(r)): false) || 
+          (activity.data.description? activity.data.description.split(/(\s+)/).some(r=> keywords.includes(r)): false)){
+            d.push(activity);
+          }
+      });
+      this.res = d;
+      this.$store.state.activities = d;
     },
 
     catFilter: async function (n) {
@@ -267,10 +262,6 @@ export default {
       this.$store.state.activities = d;
     },
 
-    payment: function () {
-      this.$router.replace("/payment");
-      alert("Redirecting to payment details page");
-    },
     filter: function (n) {
       console.log(n);
     },
