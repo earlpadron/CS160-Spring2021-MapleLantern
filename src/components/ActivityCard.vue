@@ -40,7 +40,7 @@
         <v-divider></v-divider>
         <v-card-text> {{ description }} </v-card-text>
 
-        <router-link :to="{ name: 'MapView', params: { query2: address } }">
+        <router-link :to="{ name: 'MapView', params: { destination: address, istfg: origin } }">
           <v-btn class="ma-5">Location</v-btn>
         </router-link>
         <!-- </v-btn> -->
@@ -60,10 +60,12 @@ export default {
       show: false,
       //set address to actual event address
       location: "200 S Mathilda Ave, Sunnyvale, CA",
+      origin: null,
     };
   },
   mounted() {
     console.log({ router: this.$router });
+    this.getLocation();
   },
   props: {
     activityName: String,
@@ -139,6 +141,20 @@ export default {
         .catch(function (error) {
           console.log("Error getting documents: ", error);
         });
+    },
+    getLocation: function () {
+      if(!("geolocation" in navigator)) {
+        console.log('Geolocation is not available.');
+      }
+      else
+      {
+        navigator.geolocation.getCurrentPosition(pos => {
+          console.log("position: ", pos.coords)
+          this.origin = pos.coords;
+        }, err => {
+          console.log("error: ", err.message);
+        })
+      }
     },
   },
 };
