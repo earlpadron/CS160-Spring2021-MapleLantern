@@ -40,7 +40,7 @@
         <v-divider></v-divider>
         <v-card-text> {{ description }} </v-card-text>
 
-        <router-link :to="{ name: 'MapView', params: { destination: address, istfg: origin } }">
+        <router-link :to="{ name: 'MapView', params: { destination: address, propPlace: origin } }">
           <v-btn class="ma-5">Location</v-btn>
         </router-link>
         <!-- </v-btn> -->

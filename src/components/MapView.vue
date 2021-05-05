@@ -19,7 +19,7 @@ export default {
       route: null,
     };
   },
-  props: ['destination', 'istfg'],
+  props: ['destination', 'propPlace'],
   created(){
     
   },
@@ -33,8 +33,8 @@ export default {
   },
   methods: {
     initializeHereMap() { // rendering map
-      console.log("istfg: ", this.istfg);
-      this.origin = this.istfg.latitude + ',' + this.istfg.longitude;
+      console.log("propPlace: ", this.propPlace);
+      this.origin = this.propPlace.latitude + ',' + this.propPlace.longitude;
 
       const mapContainer = this.$refs.hereMap;
       const H = window.H;
@@ -47,7 +47,7 @@ export default {
         center: this.center
       });
 
-      this.destination = "200 S Mathilda Ave, Sunnyvale, CA";
+      // this.destination = "200 S Mathilda Ave, Sunnyvale, CA";
       //Find and plot destination
       if(this.destination == null)
       {
@@ -106,7 +106,7 @@ export default {
             // Get an instance of the routing service version 8:
             var router = this.platform.getRoutingService(null, 8);
             console.log("zoom: ", map.getCenter())
-            let whatever = {lat: ((item.position.lat + this.istfg.latitude)/2), lng: ((item.position.lng + this.istfg.longitude)/2)}
+            let whatever = {lat: ((item.position.lat + this.propPlace.latitude)/2), lng: ((item.position.lng + this.propPlace.longitude)/2)}
             map.setCenter(whatever);
             // console.log("zoom: ", map.getZoom())
 
