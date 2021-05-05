@@ -1,55 +1,70 @@
 <template>
   <v-app>
-    <v-app-bar
-      app
-      color="primary"
-      dark
-    >
-      <div class="d-flex align-center">
-        <v-img
-          alt="Vuetify Logo"
-          class="shrink mr-2"
-          contain
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-logo-dark.png"
-          transition="scale-transition"
-          width="40"
-        />
-
-        <v-img
-          alt="Vuetify Name"
-          class="shrink mt-1 hidden-sm-and-down"
-          contain
-          min-width="100"
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-name-dark.png"
-          width="100"
-        />
-      </div>
-
+    <v-app-bar app color="white">
+      <v-container class="py-0 fill-height">
+        <div v-if="loggedIn">
+        <v-btn v-for="link in links" :key="link" text @click="leave(link)" >
+          {{ link }}
+        </v-btn>
+        <v-btn text @click="logout"> Logout </v-btn>
+        </div>
+        <div v-else @click="leave('home')">
+          <h2 class="font-weight-light" id="name" text>Maple Lantern</h2>
+        </div>
+        <v-spacer></v-spacer>
+      </v-container>
       <v-spacer></v-spacer>
-
-      <v-btn
-        href="https://github.com/vuetifyjs/vuetify/releases/latest"
-        target="_blank"
-        text
-      >
-        <span class="mr-2">Latest Release</span>
-        <v-icon>mdi-open-in-new</v-icon>
-      </v-btn>
     </v-app-bar>
 
     <v-main>
-      <router-view/>
+      <router-view />
     </v-main>
   </v-app>
 </template>
 
 <script>
-
+import firebase from "firebase";
 export default {
-  name: 'App',
+  name: "App",
 
   data: () => ({
-    //
+    links: ["home", "post", "profile", "settings"],
+    loggedIn: false,
   }),
+
+  watch: {
+    loggedIn: function(){
+      var user = firebase.auth().currentUser;
+
+      if (user) {
+        // User is signed in.
+        this.loggedIn = true;
+      }
+    }
+
+    //  else {
+    //   // No user is signed in.
+    // }
+  },
+  methods: {
+    leave: function (n) {
+      this.$router.replace(`/${n}`);
+      alert(`Redirecting to ${n} page`);
+    },
+    logout: function () {
+      firebase
+        .auth()
+        .signOut()
+        .then(() => {
+          this.$router.replace("login");
+          alert("You are signed out");
+        });
+    },
+  },
 };
 </script>
+<style scoped>
+#name{
+  color:orange
+}
+</style>

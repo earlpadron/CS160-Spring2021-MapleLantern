@@ -1,31 +1,40 @@
 {
-  "name": "vueapp",
+  "name": "maplelantern",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "test": "jest"
   },
   "dependencies": {
+    "@vue/cli-plugin-unit-jest": "^4.5.12",
+    "@vue/test-utils": "^1.2.0",
     "core-js": "^3.6.5",
     "crypto-js": "^4.0.0",
-    "firebase": "^8.2.9",
+    "firebase": "^8.3.1",
+    "tslib": "^2.2.0",
     "vue": "^2.6.11",
     "vue-router": "^3.5.1",
-    "vuetify": "^2.4.0"
+    "vuetify": "^2.4.7",
+    "vuex": "^3.6.2"
   },
   "devDependencies": {
-    "@vue/cli-plugin-babel": "~4.5.0",
-    "@vue/cli-plugin-eslint": "~4.5.0",
-    "@vue/cli-service": "~4.5.0",
+    "@vue/cli-plugin-babel": "^4.5.12",
+    "@vue/cli-plugin-eslint": "^4.5.12",
+    "@vue/cli-service": "^4.5.12",
     "babel-eslint": "^10.1.0",
+    "babel-jest": "^26.6.3",
     "eslint": "^6.7.2",
     "eslint-plugin-vue": "^6.2.2",
+    "jest": "^26.6.3",
     "sass": "^1.32.0",
     "sass-loader": "^10.0.0",
-    "vue-cli-plugin-vuetify": "^2.2.2",
+    "vue-cli-plugin-vuetify": "^2.3.0",
+    "vue-jest": "^3.0.7",
     "vue-template-compiler": "^2.6.11",
+    "vue-test-utils": "^1.0.0-beta.11",
     "vuetify-loader": "^1.7.0"
   },
   "eslintConfig": {
@@ -42,6 +51,21 @@
     },
     "rules": {
       "no-unused-vars": "off"
+    }
+  },
+  "jest": {
+    "moduleNameMapper": {
+      "^vue$": "vue/dist/vue.common.js",
+      "vuetify/lib(.*)": "<rootDir>/node_modules/vuetify/es5$1"
+    },
+    "moduleFileExtensions": [
+      "js",
+      "vue",
+      "json"
+    ],
+    "transform": {
+      "^.+\\.js$": "<rootDir>/node_modules/babel-jest",
+      ".*\\.(vue)$": "<rootDir>/node_modules/vue-jest"
     }
   },
   "browserslist": [
