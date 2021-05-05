@@ -7,7 +7,7 @@
 
     <v-card-title> {{ activityName }} </v-card-title>
     <v-card-subtitle> Cost:{{ cost }} points </v-card-subtitle>
-    <v-card-subtitle> Categories: {{ categories }} </v-card-subtitle>
+    <v-card-subtitle> Categories: {{ categories.join(", ") }} </v-card-subtitle>
     <v-card-actions v-if="isActivityCard">
       <v-btn color="orange lighten-2" text @click="show = !show">
         Details
@@ -40,7 +40,12 @@
         <v-divider></v-divider>
         <v-card-text> {{ description }} </v-card-text>
 
-        <router-link :to="{ name: 'MapView', params: { destination: address, propPlace: origin } }">
+        <router-link
+          :to="{
+            name: 'MapView',
+            params: { destination: address, propPlace: origin },
+          }"
+        >
           <v-btn class="ma-5">Location</v-btn>
         </router-link>
         <!-- </v-btn> -->
@@ -64,7 +69,6 @@ export default {
     };
   },
   mounted() {
-    console.log({ router: this.$router });
     this.getLocation();
   },
   props: {
@@ -72,7 +76,7 @@ export default {
     cost: Number,
     vender: String,
     description: String,
-    categories: [],
+    categories: Array,
     eventStart: String,
     eventEnd: String,
     isActivityCard: Boolean,
@@ -143,17 +147,18 @@ export default {
         });
     },
     getLocation: function () {
-      if(!("geolocation" in navigator)) {
-        console.log('Geolocation is not available.');
-      }
-      else
-      {
-        navigator.geolocation.getCurrentPosition(pos => {
-          console.log("position: ", pos.coords)
-          this.origin = pos.coords;
-        }, err => {
-          console.log("error: ", err.message);
-        })
+      if (!("geolocation" in navigator)) {
+        console.log("Geolocation is not available.");
+      } else {
+        navigator.geolocation.getCurrentPosition(
+          (pos) => {
+            // console.log("position: ", pos.coords);
+            this.origin = pos.coords;
+          },
+          (err) => {
+            console.log("error: ", err.message);
+          }
+        );
       }
     },
   },

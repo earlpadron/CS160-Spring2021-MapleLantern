@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <v-container>
+    <!-- <v-container>
       <h3>HOME</h3>
       <button @click="logout">Log out</button>
     </v-container>
@@ -27,10 +27,10 @@
         </span>
       </v-tooltip>
 
-    </v-container>
+    </v-container> -->
 
     <v-container>
-      <v-btn color="success" class="mr-4" @click="post()">
+      <!-- <v-btn color="success" class="mr-4" @click="post()">
         Create A Post
       </v-btn>
 
@@ -48,9 +48,9 @@
         <span>Have an activity you want to share? Click here to set <br/> 
               up and create a post <br/> 
         </span>
-      </v-tooltip>
+      </v-tooltip> -->
       <div class="text-center">
-        <h1 class="font-weight-light">Maple Lantern</h1>
+        <h1 class="font-weight-light">Activities</h1>
       </div>
     </v-container>
 
@@ -144,7 +144,7 @@ export default {
 
   data() {
     return {
-      links: ["payment", "post", "profile", "settings"],
+      links: (this.$store.state.user.userType == "ServiceProvider")?["payment", "post", "profile"]:["payment", "profile"],
       categories: [
         "Volunteering",
         "Tutoring",
@@ -191,10 +191,10 @@ export default {
       );
     },
     initials() {
-      if(this.$store.state.user){
+      if (this.$store.state.user) {
         let name = this.$store.state.user.name.split(" ");
         return name[0][0] + name[1][0];
-      } else{
+      } else {
         return "U";
       }
     },
@@ -218,11 +218,21 @@ export default {
       const keywords = this.searchKeywords.split(/(\s+)/);
 
       let d = [];
-      this.$store.state.allActivities.forEach(activity => {
-        if((activity.data.name? activity.data.name.split(/(\s+)/).some(r=> keywords.includes(r)): false) || 
-          (activity.data.description? activity.data.description.split(/(\s+)/).some(r=> keywords.includes(r)): false)){
-            d.push(activity);
-          }
+      this.$store.state.allActivities.forEach((activity) => {
+        if (
+          (activity.data.name
+            ? activity.data.name
+                .split(/(\s+)/)
+                .some((r) => keywords.includes(r))
+            : false) ||
+          (activity.data.description
+            ? activity.data.description
+                .split(/(\s+)/)
+                .some((r) => keywords.includes(r))
+            : false)
+        ) {
+          d.push(activity);
+        }
       });
       this.res = d;
       this.$store.state.activities = d;
@@ -230,21 +240,22 @@ export default {
 
     catFilter: async function (n) {
       const db = firebase.firestore();
-      const d = [];
+      var d = [];
       if (n == "All") {
-        await db
-          .collection("Activities")
-          .get()
-          .then(function (querySnapshot) {
-            querySnapshot.forEach(function (doc) {
-              // doc.data() is never undefined for query doc snapshots
-              // console.log(doc.id, " => ", doc.data());
-              d.push({ id: doc.id, data: doc.data() });
-            });
-          })
-          .catch(function (error) {
-            console.log("Error getting documents: ", error);
-          });
+        // await db
+        //   .collection("Activities")
+        //   .get()
+        //   .then(function (querySnapshot) {
+        //     querySnapshot.forEach(function (doc) {
+        //       // doc.data() is never undefined for query doc snapshots
+        //       // console.log(doc.id, " => ", doc.data());
+        //       d.push({ id: doc.id, data: doc.data() });
+        //     });
+        //   })
+        //   .catch(function (error) {
+        //     console.log("Error getting documents: ", error);
+        //   });
+        d = this.$store.state.allActivities;
       } else {
         await db
           .collection("Activities")
