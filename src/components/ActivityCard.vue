@@ -57,11 +57,23 @@
 
 
 <script>
+
+import firebase from 'firebase';
+//import 'firebase/firestore'
+//import firebaseApp from '../main';
+
+//var citizens = firebase.firestore().collection("/Citizens");
+
 export default {
   name: "ActivityCard",
   data() {
     return {
       show: false,
+      user: this.$store.state.user.email,
+      userType: this.$store.state.user.userType,
+      name: this.$store.state.user.name,
+      points: this.$store.state.user.points,
+      docID: this.$store.state.user.docID,
       //set address to actual event address 
       location: "200 S Mathilda Ave, Sunnyvale, CA",
     };
@@ -78,11 +90,36 @@ export default {
     isProfileCard: Boolean,
     isVenderCard: Boolean,
     isAdminCard: Boolean,
-    address: String,
+    address: String
   },
   methods: {
-    purchase: function () {},
-  },
+    purchase: async function () {
+        //alert("aaaa")
+        //alert(this.docID);
+        const db = firebase.firestore();
+        const data = await db.collection("Activities").where("name", "==", this.activityName).get();
+        const activityDocID = data.docs[0].id;
+        const activityRef = "/Activities/" + activityDocID;
+        //alert(activityDocID)
+        console.log("here1 ")
+        if(this.points>=this.cost){
+          console.log("here 2 ");
+          console.log(activityRef);
+          console.log(this.docID);
+          var adding = {
+            "activity": db.doc('/Activities/' + activityDocID),
+            "datePurchased": Date.now()
+          };
+          db.collection("Citizens").doc(this.docID).update({
+            "points": this.points - this.cost,
+            "purchased": firebase.firestore.FieldValue.arrayUnion(adding)
+          });
+          alert("check the database");
+        } else {
+          alert("You currently do not have sufficient points to purchase this activity. Please purchase more points first")
+        }
+    }
+  }
 };
 </script>
 
