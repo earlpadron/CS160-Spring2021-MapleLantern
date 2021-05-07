@@ -114,6 +114,7 @@ export default {
             "points": this.points - this.cost,
             "purchased": firebase.firestore.FieldValue.arrayUnion(adding)
           });
+          this.$store.state.user.points = this.points - this.cost;
           alert("check the database");
         } else {
           alert("You currently do not have sufficient points to purchase this activity. Please purchase more points first")
