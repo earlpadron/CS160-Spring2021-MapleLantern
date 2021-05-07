@@ -64,7 +64,7 @@
           <v-btn v-for="link in links" :key="link" text @click="leave(link)">
             {{ link }}
           </v-btn>
-          <v-btn text @click="logout"> Logout </v-btn>
+          <v-btn text @click="logout" v-if="this.$store.state.user.userType"> Logout </v-btn>
 
           <v-spacer></v-spacer>
 
@@ -191,11 +191,12 @@ export default {
       );
     },
     initials() {
-      if (this.$store.state.user) {
+      if (this.$store.state.user.name) {
         let name = this.$store.state.user.name.split(" ");
         return name[0][0] + name[1][0];
+        // return "A";
       } else {
-        return "U";
+        return "@";
       }
     },
   },

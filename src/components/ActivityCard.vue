@@ -6,8 +6,10 @@
     ></v-img>
 
     <v-card-title> {{ activityName }} </v-card-title>
-    <v-card-subtitle> Cost:{{ cost }} points </v-card-subtitle>
-    <v-card-subtitle> Categories: {{ categories.join(", ") }} </v-card-subtitle>
+    <v-card-text> Cost:{{ cost }} points </v-card-text>
+    <v-card-text> Categories: {{ categories.join(", ") }} </v-card-text>
+    <v-card-text> Event Date: {{ eventStart }} - {{eventEnd}} </v-card-text>
+
     <v-card-actions v-if="isActivityCard">
       <v-btn color="orange lighten-2" text @click="show = !show">
         Details

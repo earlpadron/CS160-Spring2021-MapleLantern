@@ -11,26 +11,34 @@ import Vuex from "vuex";
 
 Vue.use(Vuex);
 const store = new Vuex.Store({
-    state: {
-        email:"",
-        userType:"",
-        results:[]
+  state: {
+    user: {
+      email: "",
+      userType: undefined,
+      points: 0,
+      name: undefined,
+      docID: "",
+      docPath: "",
+      allActivities: [],
+      activities: []
     },
-    getter: {
-      getEmail: function() {
-          return this.$state.email;
-      },
-
-      getRes: function() {
-        return this.$state.results;
-      }
+    activities: []
+  },
+  getter: {
+    getEmail: function () {
+      return this.$state.email;
     },
-    mutation: {
 
-    },
-    action: {
-
+    getRes: function () {
+      return this.$state.results;
     }
+  },
+  mutation: {
+
+  },
+  action: {
+
+  }
 })
 
 Vue.config.productionTip = false
