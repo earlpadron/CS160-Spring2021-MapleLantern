@@ -33,7 +33,7 @@ export default {
   },
   methods: {
     initializeHereMap() { // rendering map
-      console.log("propPlace: ", this.propPlace);
+      // console.log("propPlace: ", this.propPlace);
       this.origin = this.propPlace.latitude + ',' + this.propPlace.longitude;
 
       const mapContainer = this.$refs.hereMap;
@@ -60,7 +60,7 @@ export default {
         }, (result) => {
           // Add a marker for each location found
           result.items.forEach((item) => {
-            console.log("The destination is:\n", item.position.lat + ',' + item.position.lng);
+            // console.log("The destination is:\n", item.position.lat + ',' + item.position.lng);
             this.location = item.position.lat + ',' + item.position.lng;
 
             //Find and plot route
@@ -105,7 +105,7 @@ export default {
 
             // Get an instance of the routing service version 8:
             var router = this.platform.getRoutingService(null, 8);
-            console.log("zoom: ", map.getCenter())
+            // console.log("center: ", map.getCenter())
             let whatever = {lat: ((item.position.lat + this.propPlace.latitude)/2), lng: ((item.position.lng + this.propPlace.longitude)/2)}
             map.setCenter(whatever);
             // console.log("zoom: ", map.getZoom())
