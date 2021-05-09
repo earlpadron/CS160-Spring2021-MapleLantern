@@ -6,7 +6,6 @@
     ></v-img>
 
     <v-card-title> {{ activityName }} </v-card-title>
-
     <v-card-subtitle> {{ cost }} points </v-card-subtitle>
     <v-card-subtitle> {{ categories }} </v-card-subtitle>
     <v-card-actions v-if="isActivityCard">
@@ -45,7 +44,7 @@
         <v-divider></v-divider>
         <v-card-text> {{ description }} </v-card-text>
         
-          <router-link :to="{ name: 'MapView', params: { query2: address }}">
+          <router-link :to="{ name: 'MapView', params: { destination: address, propPlace: origin } }">
             <v-btn class="ma-5">Location</v-btn>
           </router-link>
         <!-- </v-btn> -->
@@ -77,6 +76,10 @@ export default {
       //set address to actual event address 
       location: "200 S Mathilda Ave, Sunnyvale, CA",
     };
+  },
+  mounted() {
+    console.log({ router: this.$router });
+    this.getLocation();
   },
   props: {
     activityName: String,
@@ -119,7 +122,21 @@ export default {
         } else {
           alert("You currently do not have sufficient points to purchase this activity. Please purchase more points first")
         }
-    }
+    },
+    getLocation: function () {
+      if(!("geolocation" in navigator)) {
+        console.log('Geolocation is not available.');
+      }
+      else
+      {
+        navigator.geolocation.getCurrentPosition(pos => {
+          console.log("position: ", pos.coords)
+          this.origin = pos.coords;
+        }, err => {
+          console.log("error: ", err.message);
+        })
+      }
+    },
   }
 };
 </script>

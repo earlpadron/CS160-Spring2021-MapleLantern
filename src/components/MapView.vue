@@ -13,11 +13,13 @@ export default {
       platform: null,
       apikey: "MdNfW02JWd0ObORzCTvgp50BSBtUQgq6LBp23MfRsrs",
       center: { lat: 37.8272, lng: -122.2913 },
-      geocodingService: {},
-      map: {}
+      geocoder: {},
+      origin: "",
+      location: null,
+      route: null,
     };
   },
-  props: ['query2'],
+  props: ['destination', 'propPlace'],
   created(){
     
   },
@@ -26,11 +28,13 @@ export default {
       apikey: this.apikey
     });
     this.platform = platform;
-    this.geocodingService = this.platform.getSearchService();
+    this.geocoder = this.platform.getSearchService();
     this.initializeHereMap();
   },
   methods: {
     initializeHereMap() { // rendering map
+      console.log("propPlace: ", this.propPlace);
+      this.origin = this.propPlace.latitude + ',' + this.propPlace.longitude;
 
       const mapContainer = this.$refs.hereMap;
       const H = window.H;
@@ -38,31 +42,97 @@ export default {
       var maptypes = this.platform.createDefaultLayers();
 
       // Instantiate (and display) a map object:
-      this.map = new H.Map(mapContainer, maptypes.vector.normal.map, {
+      var map = new H.Map(mapContainer, maptypes.vector.normal.map, {
         zoom: 9,
         center: this.center
       });
 
-      this.geocodingService.geocode({
-        q: this.query2
-      }, (result) => {
-        // Add a marker for each location found
-        result.items.forEach((item) => {
-          this.map.addObject(new H.map.Marker(item.position));
-        });
-      }, error => {
-        console.log(error)
-      });
+      // this.destination = "200 S Mathilda Ave, Sunnyvale, CA";
+      //Find and plot destination
+      if(this.destination == null)
+      {
+        this.location = this.center.lat + ',' + this.center.lng;
+      }
+      else
+      {
+        this.geocoder.geocode({
+          q: this.destination
+        }, (result) => {
+          // Add a marker for each location found
+          result.items.forEach((item) => {
+            console.log("The destination is:\n", item.position.lat + ',' + item.position.lng);
+            this.location = item.position.lat + ',' + item.position.lng;
 
-      addEventListener("resize", () => this.map.getViewPort().resize());
+            //Find and plot route
+            var routingParameters = {
+              'routingMode': 'fast',
+              'transportMode': 'car',
+              // The start point of the route:
+              'origin': this.origin,//'37.72032,-121.91935',
+              // The end point of the route:
+              'destination': this.location,//'37.8272,-122.2913',
+              // Include the route shape in the response
+              'return': 'polyline'
+            };
+
+            
+            // Define a callback function to process the routing response:
+            var onResult = function(result) {
+              // ensure that at least one route was found
+              if (result.routes.length) {
+                result.routes[0].sections.forEach((section) => {
+                  // Create a linestring to use as a point source for the route line
+                  let linestring = H.geo.LineString.fromFlexiblePolyline(section.polyline);
+
+                  // Create a polyline to display the route:
+                  let routeLine = new H.map.Polyline(linestring, {
+                    style: { strokeColor: 'blue', lineWidth: 3 }
+                  });
+
+                  // Create a marker for the start point:
+                  var icon1 = new H.map.Icon("https://img.icons8.com/dusk/2x/user-location.png", { size: { w: 56, h: 56 } });
+                  let startMarker = new H.map.Marker(section.departure.place.location, {icon: icon1});
+
+                  // Create a marker for the end point:
+                  var icon2 = new H.map.Icon("https://img.icons8.com/dusk/2x/marker.png", { size: { w: 56, h: 56 } });
+                  let endMarker = new H.map.Marker(section.arrival.place.location, {icon: icon2});
+
+                  // Add the route polyline and the two markers to the map:
+                  map.addObjects([routeLine, startMarker, endMarker]);
+                });
+              }
+            };
+
+            // Get an instance of the routing service version 8:
+            var router = this.platform.getRoutingService(null, 8);
+            console.log("zoom: ", map.getCenter())
+            let whatever = {lat: ((item.position.lat + this.propPlace.latitude)/2), lng: ((item.position.lng + this.propPlace.longitude)/2)}
+            map.setCenter(whatever);
+            // console.log("zoom: ", map.getZoom())
+
+            // Call calculateRoute() with the routing parameters,
+            // the callback and an error callback function (called if a
+            // communication error occurs):
+            router.calculateRoute(routingParameters, onResult,
+              function(error) {
+                alert('error: ', error);
+            });
+
+          });
+        }, error => {
+          console.log(error)
+        });
+      }
+
+      addEventListener("resize", () => map.getViewPort().resize());
 
       // add behavior control
-      new H.mapevents.Behavior(new H.mapevents.MapEvents(this.map));
+      new H.mapevents.Behavior(new H.mapevents.MapEvents(map));
 
       // add UI
-      H.ui.UI.createDefault(this.map, maptypes);
+      H.ui.UI.createDefault(map, maptypes);
       // End rendering the initial map
-    }
+    },
   }
 };
 </script>
