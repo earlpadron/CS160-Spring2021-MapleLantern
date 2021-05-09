@@ -6,10 +6,15 @@
     ></v-img>
 
     <v-card-title> {{ activityName }} </v-card-title>
+<<<<<<< HEAD
     <v-card-text> Cost:{{ cost }} points </v-card-text>
     <v-card-text> Categories: {{ categories.join(", ") }} </v-card-text>
     <v-card-text> Event Date: {{ eventStart }} - {{eventEnd}} </v-card-text>
 
+=======
+    <v-card-subtitle> Cost:{{ cost }} points </v-card-subtitle>
+    <v-card-subtitle> Categories: {{ categories }} </v-card-subtitle>
+>>>>>>> 6fc966d58fa044296fe5b3da8ec77cafe3f60abd
     <v-card-actions v-if="isActivityCard">
       <v-btn color="orange lighten-2" text @click="show = !show">
         Details
@@ -42,12 +47,16 @@
         <v-divider></v-divider>
         <v-card-text> {{ description }} </v-card-text>
 
+<<<<<<< HEAD
         <router-link
           :to="{
             name: 'MapView',
             params: { destination: address, propPlace: origin },
           }"
         >
+=======
+        <router-link :to="{ name: 'MapView', params: { destination: location, propPlace: origin } }">
+>>>>>>> 6fc966d58fa044296fe5b3da8ec77cafe3f60abd
           <v-btn class="ma-5">Location</v-btn>
         </router-link>
         <!-- </v-btn> -->
@@ -71,6 +80,10 @@ export default {
     };
   },
   mounted() {
+<<<<<<< HEAD
+=======
+    // console.log({ router: this.$router });
+>>>>>>> 6fc966d58fa044296fe5b3da8ec77cafe3f60abd
     this.getLocation();
   },
   props: {
@@ -149,6 +162,7 @@ export default {
         });
     },
     getLocation: function () {
+<<<<<<< HEAD
       if (!("geolocation" in navigator)) {
         console.log("Geolocation is not available.");
       } else {
@@ -161,6 +175,23 @@ export default {
             console.log("error: ", err.message);
           }
         );
+=======
+      if(!("geolocation" in navigator)) {
+        console.log('Geolocation is not available.');
+      }
+      else
+      {
+        navigator.geolocation.getCurrentPosition(pos => {
+          // console.log("position: ", pos.coords)
+          this.origin = pos.coords;
+        }, err => {
+          console.log("error: ", err.message);
+        })
+      }
+      if(this.address != null)
+      {
+        this.location = this.address;
+>>>>>>> 6fc966d58fa044296fe5b3da8ec77cafe3f60abd
       }
     },
   },

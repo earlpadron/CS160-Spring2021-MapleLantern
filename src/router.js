@@ -25,7 +25,7 @@ const router = new Router({
         },
         {
             path: '/',
-            redirect: '/login'
+            redirect: '/home'
             // name: 'landing',
             // component: HelloWorld
         },

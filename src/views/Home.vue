@@ -64,7 +64,12 @@
           <v-btn v-for="link in links" :key="link" text @click="leave(link)">
             {{ link }}
           </v-btn>
-          <v-btn text @click="logout" v-if="this.$store.state.user.userType"> Logout </v-btn>
+          <v-btn text @click="logout" v-if="this.$store.state.user.userType">
+            Logout
+          </v-btn>
+          <v-btn text @click="login" v-if="!this.$store.state.user.userType">
+            Login
+          </v-btn>
 
           <v-spacer></v-spacer>
 
@@ -144,7 +149,10 @@ export default {
 
   data() {
     return {
-      links: (this.$store.state.user.userType == "ServiceProvider")?["payment", "post", "profile"]:["payment", "profile"],
+      links:
+        this.$store.state.user.userType == "ServiceProvider"
+          ? ["payment", "post", "profile"]
+          : ["payment", "profile"],
       categories: [
         "Volunteering",
         "Tutoring",
@@ -283,6 +291,10 @@ export default {
     leave: function (n) {
       this.$router.replace(`/${n}`);
       alert(`Redirecting to ${n} page`);
+    },
+    login: function () {
+      this.$router.replace("/login");
+      alert(`Redirecting to login page`);
     },
   },
 };
