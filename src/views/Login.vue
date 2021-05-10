@@ -64,13 +64,18 @@ export default {
     login: function () {
       firebase
         .auth()
-        .signInWithEmailAndPassword(this.email, this.password)
+        .setPersistence(firebase.auth.Auth.Persistence.SESSION)
         .then(() => {
-          this.$router.push("/home");
-          alert("You are now connected!");
-        })
-        .catch((error) => {
-          alert(error.message);
+          firebase
+            .auth()
+            .signInWithEmailAndPassword(this.email, this.password)
+            .then(() => {
+              this.$router.push("/home");
+              alert("You are now connected!");
+            })
+            .catch((error) => {
+              alert(error.message);
+            });
         });
 
       this.$store.state.user = {};
@@ -128,10 +133,10 @@ export default {
         name: "",
         points: 0,
         docID: "",
-        docPath: ""
+        docPath: "",
       };
       await db
-        .collection(userType+"s")
+        .collection(userType + "s")
         .where("email", "==", this.$store.state.user.email)
         .get()
         .then(function (querySnapshot) {

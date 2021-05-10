@@ -7,11 +7,13 @@ export default new Vuex.Store({
     state: {
         user: {
             email: "",
-            userType: "",
+            userType: undefined,
             points: 0,
-            name:"",
+            name: undefined,
             docID: "",
-            docPath:""
+            docPath:"",
+            allActivities:[],
+            activities:[]
         },
         activities:[]
     },

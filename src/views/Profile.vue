@@ -14,7 +14,7 @@
               <v-list-item>
                 <v-list-item-avatar size="100">
                   <v-avatar class="ma-md-15 mx-md-15" color="red" size="164">
-                    <span class="white--text headline">CJ</span>
+                    <span class="white--text headline">{{ initials }}</span>
                   </v-avatar>
                 </v-list-item-avatar>
                 <v-list-item-content>
@@ -55,10 +55,58 @@
                   :isProfileCard="isCitizen"
                   :isVenderCard="isVender"
                   :isAdminCard="isAdmin"
+                  :id="n.id"
                 />
               </div>
             </v-slide-item>
           </v-slide-group>
+          <div v-if="isAdmin">
+          <div class="text-center">
+            <h1 class="font-weight-light">User Management</h1>
+          </div>
+          <v-form v-model="valid">
+            <v-container>
+              <v-row>
+                <v-col cols="6" md="4">
+                  <v-text-field
+                    v-model="userFormEmail"
+                    :rules="emailRules"
+                    label="E-mail"
+                    required
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="6" md="4">
+                  <v-select
+                    v-model="user_type"
+                    :items="userTypes"
+                    :error-messages="selectErrors"
+                    label="User Type"
+                    required
+                    @change="$v.select.$touch()"
+                    @blur="$v.select.$touch()"
+                  > </v-select>
+                </v-col>
+                   <v-col cols="6" md="4">
+                  <v-select
+                    v-model="userAction"
+                    :items="userActions"
+                    :error-messages="selectErrors"
+                    label="User Type"
+                    required
+                    @change="$v.select.$touch()"
+                    @blur="$v.select.$touch()"
+                  ></v-select>
+                   </v-col>
+                
+                <v-col cols="6" md="4">
+                  <v-btn class="mr-4" type="submit" @click="manageUser"
+                    >Submit</v-btn
+                  >
+                </v-col>
+              </v-row>
+            </v-container>
+          </v-form>
+          </div>
         </v-sheet>
       </v-main>
     </v-app>
@@ -78,8 +126,19 @@ export default {
       userType: this.$store.state.user.userType,
       isAdmin: false,
       name: this.$store.state.user.name,
-      points: this.$store.state.user.points
+      points: this.$store.state.user.points,
+      userFormEmail: "",
+      userTypes: ["Citizen", "ServiceProvider"],
+      user_type: "",
+      userActions : ["Locked", "Create", "Delete","Reset Password"],
+      userAction: "",
     };
+  },
+  computed: {
+    initials() {
+      let name = this.$store.state.user.name.split(" ");
+      return name[0][0] + name[1][0];
+    },
   },
 
   created() {
@@ -126,7 +185,7 @@ export default {
           await db
             .collection("Activities")
             // .doc(id)
-            .where(firebase.firestore.FieldPath.documentId(), '==', id)
+            .where(firebase.firestore.FieldPath.documentId(), "==", id)
             .get()
             .then(function (querySnapshot) {
               querySnapshot.forEach(function (doc) {
@@ -158,7 +217,7 @@ export default {
             });
           });
 
-        const vendor = "/ServiceProivders/" + docID;
+        const vendor = "/ServiceProviders/" + docID;
         this.$store.state.user.name = userData.name;
         this.$store.state.user.points = userData.points;
         this.name = this.$store.state.user.name;
@@ -181,7 +240,7 @@ export default {
         this.isAdmin = true;
         await db
           .collection("Activities")
-          .where("adminApproved", "==", false)
+          .where("approved", "==", false)
           .get()
           .then(function (querySnapshot) {
             querySnapshot.forEach(function (doc) {
@@ -199,6 +258,55 @@ export default {
 
     payment: function () {
       this.$router.replace("/addpoints");
+    },
+
+    resetPassword: function() {
+      const auth = firebase.auth();
+      auth.sendPasswordResetEmail(this.userFormEmail).then(() => {
+        alert("Password Email Reset Sent.");
+        }).catch((error) => {console.error(error);
+      });
+    },
+
+    manageUser: async function () {
+      const db = firebase.firestore();
+
+     if(this.userAction == "Locked"){
+      await db.collection(this.user_type + "s")
+        .where("email", "==", this.userFormEmail)
+        .get()
+        .then(function (querySnapshot) {
+          querySnapshot.forEach(function (doc) {
+            console.log({ id: doc.id, data: doc.data() });
+            doc.ref.update({
+              locked: true,
+            });
+          });
+        })
+        .catch(function (error) {
+          console.log("Error getting documents: ", error);
+        });
+     }
+     else if(this.userAction == "Create"){
+       this.$router.replace("/sign-up");
+     }
+     else if(this.userAction == "Delete"){
+        await db.collection(this.user_type + "s")
+        .where("email", "==", this.userFormEmail)
+        .get()
+        .then(function (querySnapshot) {
+          querySnapshot.forEach(function (doc) {
+            console.log({ id: doc.id, data: doc.data() });
+            doc.ref.delete();
+          });
+        })
+        .catch(function (error) {
+          console.log("Error getting documents: ", error);
+        });
+     }
+     else if(this.userAction == "Reset Password"){
+       this.resetPassword();
+     }
     },
   },
 };

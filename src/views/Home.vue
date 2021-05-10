@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <v-container>
+    <!-- <v-container>
       <h3>HOME</h3>
       <button @click="logout">Log out</button>
     </v-container>
@@ -27,10 +27,10 @@
         </span>
       </v-tooltip>
 
-    </v-container>
+    </v-container> -->
 
     <v-container>
-      <v-btn color="success" class="mr-4" @click="post()">
+      <!-- <v-btn color="success" class="mr-4" @click="post()">
         Create A Post
       </v-btn>
 
@@ -48,18 +48,27 @@
         <span>Have an activity you want to share? Click here to set <br/> 
               up and create a post <br/> 
         </span>
-      </v-tooltip>
+      </v-tooltip> -->
+      <div class="text-center">
+        <h1 class="font-weight-light">Activities</h1>
+      </div>
     </v-container>
 
     <v-app id="inspire">
       <v-app-bar app color="white" flat>
         <v-container class="py-0 fill-height">
           <v-avatar class="mr-10" color="green darken-1" size="32"
-            ><span class="white--text headline">CJ</span></v-avatar
+            ><span class="white--text headline">{{ initials }}</span></v-avatar
           >
 
           <v-btn v-for="link in links" :key="link" text @click="leave(link)">
             {{ link }}
+          </v-btn>
+          <v-btn text @click="logout" v-if="this.$store.state.user.userType">
+            Logout
+          </v-btn>
+          <v-btn text @click="login" v-if="!this.$store.state.user.userType">
+            Login
           </v-btn>
 
           <v-spacer></v-spacer>
@@ -75,6 +84,7 @@
               solo-inverted
             ></v-text-field>
           </v-responsive>
+          <v-btn text @click="search()"> Search </v-btn>
         </v-container>
       </v-app-bar>
 
@@ -104,12 +114,13 @@
                   <v-col v-for="n of visiblePages" :key="n.name">
                     <activity-card
                       class="ma-md-1 mx-md-1"
+                      :id="n.id"
                       :description="n.data.description"
-                      :cost=n.data.cost
+                      :cost="n.data.cost"
                       :activityName="n.data.name"
                       :eventStart="n.data.eventDateStart"
                       :eventEnd="n.data.eventDateEnd"
-                      :categories=n.data.category
+                      :categories="n.data.category"
                       :isActivityCard="true"
                       :address="n.data.address"
                     />
@@ -138,7 +149,10 @@ export default {
 
   data() {
     return {
-      links: ["browse", "schedule", "profile", "settings"],
+      links:
+        this.$store.state.user.userType == "ServiceProvider"
+          ? ["payment", "post", "profile"]
+          : ["payment", "profile"],
       categories: [
         "Volunteering",
         "Tutoring",
@@ -160,7 +174,7 @@ export default {
     const d = [];
     await db
       .collection("Activities")
-      .where('adminApproved','==',true)
+      .where("adminApproved", "==", true)
       .get()
       .then(function (querySnapshot) {
         querySnapshot.forEach(function (doc) {
@@ -174,6 +188,7 @@ export default {
       });
 
     this.res = d;
+    this.$store.state.allActivities = this.res;
   },
 
   computed: {
@@ -182,6 +197,15 @@ export default {
         (this.pagination.page - 1) * this.pagination.perPage,
         this.pagination.page * this.pagination.perPage
       );
+    },
+    initials() {
+      if (this.$store.state.user.name) {
+        let name = this.$store.state.user.name.split(" ");
+        return name[0][0] + name[1][0];
+        // return "A";
+      } else {
+        return "@";
+      }
     },
   },
 
@@ -199,54 +223,48 @@ export default {
       this.$router.replace("/post");
       alert("Redirecting to post creation page");
     },
-    search: async function () {
-      const db = firebase.firestore();
-      const keywords = this.search.split(/(\s+)/);
-      let fromName = db
-        .collection("Activities")
-        .whereContains("name", keywords);
-      let fromDesc = db
-        .collection("Activities")
-        .whereContains("description", keywords);
-      let fromCat = db
-        .collection("Activities")
-        .where("category", "array-contains-any", keywords);
+    search: function () {
+      const keywords = this.searchKeywords.split(/(\s+)/);
 
-      const [nameRes, descRes, catRes] = await Promise.all([
-        fromName,
-        fromDesc,
-        fromCat,
-      ])
-        .get()
-        .then(function (querySnapshot) {
-          querySnapshot.forEach(function (doc) {
-            // doc.data() is never undefined for query doc snapshots
-            // console.log(doc.id, " => ", doc.data());
-          });
-        })
-        .catch(function (error) {
-          console.log("Error getting documents: ", error);
-        });
-      const allRes = nameRes.concat(descRes).concat(catRes);
+      let d = [];
+      this.$store.state.allActivities.forEach((activity) => {
+        if (
+          (activity.data.name
+            ? activity.data.name
+                .split(/(\s+)/)
+                .some((r) => keywords.includes(r))
+            : false) ||
+          (activity.data.description
+            ? activity.data.description
+                .split(/(\s+)/)
+                .some((r) => keywords.includes(r))
+            : false)
+        ) {
+          d.push(activity);
+        }
+      });
+      this.res = d;
+      this.$store.state.activities = d;
     },
 
     catFilter: async function (n) {
       const db = firebase.firestore();
-      const d = [];
+      var d = [];
       if (n == "All") {
-        await db
-          .collection("Activities")
-          .get()
-          .then(function (querySnapshot) {
-            querySnapshot.forEach(function (doc) {
-              // doc.data() is never undefined for query doc snapshots
-              // console.log(doc.id, " => ", doc.data());
-              d.push({ id: doc.id, data: doc.data() });
-            });
-          })
-          .catch(function (error) {
-            console.log("Error getting documents: ", error);
-          });
+        // await db
+        //   .collection("Activities")
+        //   .get()
+        //   .then(function (querySnapshot) {
+        //     querySnapshot.forEach(function (doc) {
+        //       // doc.data() is never undefined for query doc snapshots
+        //       // console.log(doc.id, " => ", doc.data());
+        //       d.push({ id: doc.id, data: doc.data() });
+        //     });
+        //   })
+        //   .catch(function (error) {
+        //     console.log("Error getting documents: ", error);
+        //   });
+        d = this.$store.state.allActivities;
       } else {
         await db
           .collection("Activities")
@@ -267,16 +285,16 @@ export default {
       this.$store.state.activities = d;
     },
 
-    payment: function () {
-      this.$router.replace("/payment");
-      alert("Redirecting to payment details page");
-    },
     filter: function (n) {
       console.log(n);
     },
     leave: function (n) {
       this.$router.replace(`/${n}`);
       alert(`Redirecting to ${n} page`);
+    },
+    login: function () {
+      this.$router.replace("/login");
+      alert(`Redirecting to login page`);
     },
   },
 };

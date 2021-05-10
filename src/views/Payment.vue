@@ -1,5 +1,5 @@
 <template>
-  <div class="login">
+  <div class="payment">
     <v-container></v-container>
     <v-container></v-container>
     <v-container></v-container>
