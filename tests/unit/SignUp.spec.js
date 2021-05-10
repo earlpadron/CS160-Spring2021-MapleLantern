@@ -14,11 +14,12 @@ describe('SignUp.vue', () => {
     const localVue = createLocalVue()
     localVue.use(vuetify)
     localVue.use(VueRouter);
-      
+    const router = new VueRouter()
+    
     wrapper = shallowMount(SignUp, {
       localVue: localVue,
       vuetify,
-      stubs: ['router-link', 'router-view']
+      router
     });
   })
     
