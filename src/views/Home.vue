@@ -93,24 +93,61 @@
           <v-row>
             <v-col cols="2">
               <div class="text-center">
-                <h1 class="font-weight-light">Categories</h1>
+                <h1 class="font-weight-light">Search Options</h1>
               </div>
-              <v-sheet rounded="lg">
-                <v-list color="transparent">
-                  <v-list-item v-for="n in categories" :key="n" link>
-                    <v-list-item-content>
-                      <v-list-item-title @click="catFilter(n)">
-                        {{ n }}
-                      </v-list-item-title>
-                    </v-list-item-content>
-                  </v-list-item>
-                </v-list>
-              </v-sheet>
+              <v-btn
+                elevation="2"
+                @click="catFilter('All')"
+                block
+                color="white"
+              >
+                All</v-btn
+              >
+
+              <v-expansion-panels>
+                <v-expansion-panel>
+                  <v-expansion-panel-header>
+                    Age Group
+                  </v-expansion-panel-header>
+                  <v-expansion-panel-content>
+                    <v-sheet rounded="lg">
+                      <v-list color="transparent">
+                        <v-list-item v-for="n in ages" :key="n" link>
+                          <v-list-item-content>
+                            <v-list-item-title @click="ageFilter(n)">
+                              {{ n }}
+                            </v-list-item-title>
+                          </v-list-item-content>
+                        </v-list-item>
+                      </v-list>
+                    </v-sheet>
+                  </v-expansion-panel-content>
+                </v-expansion-panel>
+                <v-expansion-panel>
+                  <v-expansion-panel-header>
+                    Category
+                  </v-expansion-panel-header>
+                  <v-expansion-panel-content>
+                    <v-sheet rounded="lg">
+                      <v-list color="transparent">
+                        <v-list-item v-for="n in categories" :key="n" link>
+                          <v-list-item-content>
+                            <v-list-item-title @click="catFilter(n)">
+                              {{ n }}
+                            </v-list-item-title>
+                          </v-list-item-content>
+                        </v-list-item>
+                      </v-list>
+                    </v-sheet>
+                  </v-expansion-panel-content>
+                </v-expansion-panel>
+              </v-expansion-panels>
             </v-col>
 
             <v-col col>
-              <v-sheet min-height="70vh" rounded="lg">
+              <v-sheet min-height="70vh" rounded="sm">
                 <v-row no-gutters>
+                <!-- <v-row :align-content="start" :align="start"> -->
                   <v-col v-for="n of visiblePages" :key="n.name">
                     <activity-card
                       class="ma-md-1 mx-md-1"
@@ -120,7 +157,7 @@
                       :activityName="n.data.name"
                       :eventStart="n.data.eventDateStart"
                       :eventEnd="n.data.eventDateEnd"
-                      :categories="n.data.category"
+                      :ageGroup="n.data.ageGroup"
                       :isActivityCard="true"
                       :address="n.data.address"
                     />
@@ -159,7 +196,16 @@ export default {
         "Indoor Activity",
         "Outdoor Activity",
         "Other",
-        "All",
+      ],
+      ages: [
+        "Toddlers: 0-3",
+        "Kids: 4-8",
+        "Pre-Teens: 9-12",
+        "Adolescent: 13-18",
+        "Young Adults: 19-30",
+        "Adults: 31-59",
+        "Senior Citizens: 60+",
+        "All Ages",
       ],
       searchKeywords: "",
       res: [],
@@ -251,24 +297,36 @@ export default {
       const db = firebase.firestore();
       var d = [];
       if (n == "All") {
-        // await db
-        //   .collection("Activities")
-        //   .get()
-        //   .then(function (querySnapshot) {
-        //     querySnapshot.forEach(function (doc) {
-        //       // doc.data() is never undefined for query doc snapshots
-        //       // console.log(doc.id, " => ", doc.data());
-        //       d.push({ id: doc.id, data: doc.data() });
-        //     });
-        //   })
-        //   .catch(function (error) {
-        //     console.log("Error getting documents: ", error);
-        //   });
         d = this.$store.state.allActivities;
       } else {
         await db
           .collection("Activities")
           .where("category", "array-contains", n)
+          .get()
+          .then(function (querySnapshot) {
+            querySnapshot.forEach(function (doc) {
+              // doc.data() is never undefined for query doc snapshots
+              // console.log(doc.id, " => ", doc.data());
+              d.push({ id: doc.id, data: doc.data() });
+            });
+          })
+          .catch(function (error) {
+            console.log("Error getting documents: ", error);
+          });
+      }
+      this.res = d;
+      this.$store.state.activities = d;
+    },
+
+    ageFilter: async function (n) {
+      const db = firebase.firestore();
+      var d = [];
+      if (n == "All") {
+        d = this.$store.state.allActivities;
+      } else {
+        await db
+          .collection("Activities")
+          .where("ageGroup", "==", n)
           .get()
           .then(function (querySnapshot) {
             querySnapshot.forEach(function (doc) {

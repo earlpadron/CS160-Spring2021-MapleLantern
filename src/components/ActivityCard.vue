@@ -7,9 +7,9 @@
 
     <v-card-title> {{ activityName }} </v-card-title>
     <v-card-text> Cost:{{ cost }} points </v-card-text>
-    <v-card-text> Categories: {{ categories.join(", ") }} </v-card-text>
-    <v-card-text> Event Date: {{ eventStart }} - {{eventEnd}} </v-card-text>
-    
+    <v-card-text> Age Group: {{ ageGroup }} </v-card-text>
+    <v-card-text> Event Date: {{ eventStart }} - {{ eventEnd }} </v-card-text>
+
     <v-card-actions v-if="isActivityCard">
       <v-btn color="orange lighten-2" text @click="show = !show">
         Details
@@ -42,7 +42,12 @@
         <v-divider></v-divider>
         <v-card-text> {{ description }} </v-card-text>
 
-        <router-link :to="{ name: 'MapView', params: { destination: location, propPlace: origin } }">
+        <router-link
+          :to="{
+            name: 'MapView',
+            params: { destination: location, propPlace: origin },
+          }"
+        >
           <v-btn class="ma-5">Location</v-btn>
         </router-link>
         <!-- </v-btn> -->
@@ -60,6 +65,11 @@ export default {
   data() {
     return {
       show: false,
+      user: this.$store.state.user.email,
+      userType: this.$store.state.user.userType,
+      name: this.$store.state.user.name,
+      points: this.$store.state.user.points,
+      docID: this.$store.state.user.docID,
       //set address to actual event address
       location: "200 S Mathilda Ave, Sunnyvale, CA",
       origin: null,
@@ -75,6 +85,7 @@ export default {
     vender: String,
     description: String,
     categories: Array,
+    ageGroup:String,
     eventStart: String,
     eventEnd: String,
     isActivityCard: Boolean,
@@ -89,17 +100,49 @@ export default {
       this.$router.replace("/login");
       alert(`Redirecting to login page`);
     },
-    purchase: function () {
-      let currentUser;
-      firebase.auth().onAuthStateChanged(function (user) {
-        currentUser = user;
-      });
-      if (currentUser) {
-        // User is signed in.
+    purchase: async function () {
+      // let currentUser;
+      // firebase.auth().onAuthStateChanged(function (user) {
+      //   currentUser = user;
+      // });
+      // if (currentUser) {
+      //   // User is signed in.
+      // } else {
+      //   // No user is signed in.
+      //   this.$router.replace("/login");
+      //   alert(`Redirecting to login page`);
+      // }
+      //alert("aaaa")
+      //alert(this.docID);
+      const db = firebase.firestore();
+      const data = await db
+        .collection("Activities")
+        .where("name", "==", this.activityName)
+        .get();
+      const activityDocID = data.docs[0].id;
+      const activityRef = "/Activities/" + activityDocID;
+      //alert(activityDocID)
+      console.log("here1 ");
+      if (this.points >= this.cost) {
+        console.log("here 2 ");
+        console.log(activityRef);
+        console.log(this.docID);
+        var adding = {
+          activity: db.doc("/Activities/" + activityDocID),
+          datePurchased: Date.now(),
+        };
+        db.collection("Citizens")
+          .doc(this.docID)
+          .update({
+            points: this.points - this.cost,
+            purchased: firebase.firestore.FieldValue.arrayUnion(adding),
+          });
+           this.$store.state.user.points = this.points - this.cost;
+        alert("check the database");
       } else {
-        // No user is signed in.
-        this.$router.replace("/login");
-        alert(`Redirecting to login page`);
+        alert(
+          "You currently do not have sufficient points to purchase this activity. Please purchase more points first"
+        );
       }
     },
     approve: async function () {
@@ -145,20 +188,20 @@ export default {
         });
     },
     getLocation: function () {
-      if(!("geolocation" in navigator)) {
-        console.log('Geolocation is not available.');
+      if (!("geolocation" in navigator)) {
+        console.log("Geolocation is not available.");
+      } else {
+        navigator.geolocation.getCurrentPosition(
+          (pos) => {
+            // console.log("position: ", pos.coords)
+            this.origin = pos.coords;
+          },
+          (err) => {
+            console.log("error: ", err.message);
+          }
+        );
       }
-      else
-      {
-        navigator.geolocation.getCurrentPosition(pos => {
-          // console.log("position: ", pos.coords)
-          this.origin = pos.coords;
-        }, err => {
-          console.log("error: ", err.message);
-        })
-      }
-      if(this.address != null)
-      {
+      if (this.address != null) {
         this.location = this.address;
       }
     },

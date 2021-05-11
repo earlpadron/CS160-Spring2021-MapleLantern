@@ -187,6 +187,7 @@ export default {
           name: this.Name,
           provider: user,
           address: this.Location,
+          description: this.Description,
         })
         .then(() => {
           console.log("Successfully added the activity");
