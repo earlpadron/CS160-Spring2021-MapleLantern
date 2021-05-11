@@ -160,6 +160,7 @@
                       :ageGroup="n.data.ageGroup"
                       :isActivityCard="true"
                       :address="n.data.address"
+                      :categories="n.data.categories"
                     />
                   </v-col>
                 </v-row>
@@ -301,7 +302,7 @@ export default {
       } else {
         await db
           .collection("Activities")
-          .where("category", "array-contains", n)
+          .where("categories", "array-contains", n)
           .get()
           .then(function (querySnapshot) {
             querySnapshot.forEach(function (doc) {

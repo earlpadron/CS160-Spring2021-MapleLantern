@@ -81,6 +81,16 @@ use this package: https://stackoverflow.com/questions/58228404/implement-datetim
             required
           ></v-overflow-btn>
 
+          <v-select
+            v-model="cats"
+            :items="categories"
+            :menu-props="{ maxHeight: '400' }"
+            label="Select"
+            multiple
+            hint="Activity categories"
+            persistent-hint
+          ></v-select>
+
           <v-text-field
             v-model="Location"
             label="Location"
@@ -127,16 +137,23 @@ export default {
       toDateMenu: false,
 
       ages: [
-          { ages: 'Toddlers: 0-3'},
-          { ages: 'Kids: 4-8'},
-          { ages: 'Pre-Teens: 9-12'},
-          { ages: 'Adolescent: 13-18'},
-          { ages: 'Young Adults: 19-30'},
-          { ages: 'Adults: 31-59'},
-          { ages: 'Senior Citizens: 60+'},
-          { ages: 'All Ages'}
-        ],
+        { ages: "Toddlers: 0-3" },
+        { ages: "Kids: 4-8" },
+        { ages: "Pre-Teens: 9-12" },
+        { ages: "Adolescent: 13-18" },
+        { ages: "Young Adults: 19-30" },
+        { ages: "Adults: 31-59" },
+        { ages: "Senior Citizens: 60+" },
+        { ages: "All Ages" },
+      ],
 
+      categories: [
+        "Volunteering",
+        "Tutoring",
+        "Indoor Activity",
+        "Outdoor Activity",
+        "Other",
+      ],
       minDate: "2020-07-04",
       maxDate: "2030-08-30",
       //values from the calendar
@@ -148,6 +165,7 @@ export default {
       cost: 0,
       Upload: null,
       Location: "",
+      cats:[],
     };
   },
   computed: {
@@ -179,7 +197,7 @@ export default {
           ageGroup: this.AgeGroup,
           approved: false,
           adminApproved: false,
-          category: [],
+          categories: this.cats,
           cost: this.cost,
           datePosted: new Date(),
           eventDateEnd: this.toDateVal,

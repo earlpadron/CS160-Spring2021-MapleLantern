@@ -7,6 +7,7 @@
 
     <v-card-title> {{ activityName }} </v-card-title>
     <v-card-text> Cost:{{ cost }} points </v-card-text>
+    <v-card-text> Categories: {{ categories.join(", ") }}</v-card-text>
     <v-card-text> Age Group: {{ ageGroup }} </v-card-text>
     <v-card-text> Event Date: {{ eventStart }} - {{ eventEnd }} </v-card-text>
 

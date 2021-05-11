@@ -18,8 +18,13 @@
                   </v-avatar>
                 </v-list-item-avatar>
                 <v-list-item-content>
-                  <v-list-item-title class="title" style="margin-top: 10px">{{ name }}</v-list-item-title>
-                  <v-list-item-subtitle v-if="userType == 'Citizen' || userType == 'Service Provider'" 
+                  <v-list-item-title class="title" style="margin-top: 10px">{{
+                    name
+                  }}</v-list-item-title>
+                  <v-list-item-subtitle
+                    v-if="
+                      userType == 'Citizen' || userType == 'Service Provider'
+                    "
                     >Points: {{ points }}</v-list-item-subtitle
                   >
                   <v-list-item-subtitle v-if="userType == 'Citizen'"
@@ -51,7 +56,8 @@
                   :activityName="n.data.name"
                   :eventStart="n.data.eventDateStart"
                   :eventEnd="n.data.eventDateEnd"
-                  :categories="n.data.category"
+                  :categories="n.data.categories"
+                  :ageGroup="n.data.ageGroup"
                   :isProfileCard="isCitizen"
                   :isVenderCard="isVender"
                   :isAdminCard="isAdmin"
@@ -61,51 +67,53 @@
             </v-slide-item>
           </v-slide-group>
           <div v-if="isAdmin">
-          <div class="text-center">
-            <h1 class="font-weight-light">User Management</h1>
-          </div>
-          <v-form v-model="valid">
-            <v-container>
-              <v-row>
-                <v-col cols="6" md="4">
-                  <v-text-field
-                    v-model="userFormEmail"
-                    :rules="emailRules"
-                    label="E-mail"
-                    required
-                  ></v-text-field>
-                </v-col>
-                <v-col cols="6" md="4">
-                  <v-select
-                    v-model="user_type"
-                    :items="userTypes"
-                    :error-messages="selectErrors"
-                    label="User Type"
-                    required
-                    @change="$v.select.$touch()"
-                    @blur="$v.select.$touch()"
-                  > </v-select>
-                </v-col>
-                   <v-col cols="6" md="4">
-                  <v-select
-                    v-model="userAction"
-                    :items="userActions"
-                    :error-messages="selectErrors"
-                    label="User Type"
-                    required
-                    @change="$v.select.$touch()"
-                    @blur="$v.select.$touch()"
-                  ></v-select>
-                   </v-col>
-                
-                <v-col cols="6" md="4">
-                  <v-btn class="mr-4" type="submit" @click="manageUser"
-                    >Submit</v-btn
-                  >
-                </v-col>
-              </v-row>
-            </v-container>
-          </v-form>
+            <div class="text-center">
+              <h1 class="font-weight-light">User Management</h1>
+            </div>
+            <v-form v-model="valid">
+              <v-container>
+                <v-row>
+                  <v-col cols="6" md="4">
+                    <v-text-field
+                      v-model="userFormEmail"
+                      :rules="emailRules"
+                      label="E-mail"
+                      required
+                    ></v-text-field>
+                  </v-col>
+                  <!-- :error-messages="selectErrors" -->
+                  <v-col cols="6" md="4">
+                    <v-select
+                      v-model="user_type"
+                      :items="userTypes"
+                      label="User Type"
+                      required
+                      @change="$v.select.$touch()"
+                      @blur="$v.select.$touch()"
+                    >
+                    </v-select>
+                  </v-col>
+
+                  <!-- :error-messages="selectErrors" -->
+                  <v-col cols="6" md="4">
+                    <v-select
+                      v-model="userAction"
+                      :items="userActions"
+                      label="User Type"
+                      required
+                      @change="$v.select.$touch()"
+                      @blur="$v.select.$touch()"
+                    ></v-select>
+                  </v-col>
+
+                  <v-col cols="6" md="4">
+                    <v-btn class="mr-4" type="submit" @click="manageUser"
+                      >Submit</v-btn
+                    >
+                  </v-col>
+                </v-row>
+              </v-container>
+            </v-form>
           </div>
         </v-sheet>
       </v-main>
@@ -124,14 +132,21 @@ export default {
     return {
       model: null,
       userType: this.$store.state.user.userType,
+      isCitizen: false,
+      isVender: false,
       isAdmin: false,
       name: this.$store.state.user.name,
       points: this.$store.state.user.points,
       userFormEmail: "",
       userTypes: ["Citizen", "ServiceProvider"],
       user_type: "",
-      userActions : ["Locked", "Create", "Delete","Reset Password"],
+      userActions: ["Locked", "Create", "Delete", "Reset Password"],
       userAction: "",
+      valid: false,
+      emailRules: [
+        (v) => !!v || "E-mail is required",
+        (v) => /.+@.+/.test(v) || "E-mail must be valid",
+      ],
     };
   },
   computed: {
@@ -164,7 +179,7 @@ export default {
       const db = firebase.firestore();
       const d = [];
       if (this.$store.state.user.userType == "Citizen") {
-        //this.isCitizen = true;
+        this.isCitizen = true;
         let purchasedIDs;
         await db
           .collection("Citizens")
@@ -198,7 +213,7 @@ export default {
             });
         }
       } else if (this.$store.state.user.userType == "ServiceProvider") {
-        //this.isVender = true;
+        this.isVender = true;
         let docID = "";
         let userData = {
           name: "",
@@ -260,53 +275,56 @@ export default {
       this.$router.replace("/addpoints");
     },
 
-    resetPassword: function() {
+    resetPassword: function () {
       const auth = firebase.auth();
-      auth.sendPasswordResetEmail(this.userFormEmail).then(() => {
-        alert("Password Email Reset Sent.");
-        }).catch((error) => {console.error(error);
-      });
+      auth
+        .sendPasswordResetEmail(this.userFormEmail)
+        .then(() => {
+          alert("Password Email Reset Sent.");
+        })
+        .catch((error) => {
+          console.error(error);
+        });
     },
 
     manageUser: async function () {
       const db = firebase.firestore();
 
-     if(this.userAction == "Locked"){
-      await db.collection(this.user_type + "s")
-        .where("email", "==", this.userFormEmail)
-        .get()
-        .then(function (querySnapshot) {
-          querySnapshot.forEach(function (doc) {
-            console.log({ id: doc.id, data: doc.data() });
-            doc.ref.update({
-              locked: true,
+      if (this.userAction == "Locked") {
+        await db
+          .collection(this.user_type + "s")
+          .where("email", "==", this.userFormEmail)
+          .get()
+          .then(function (querySnapshot) {
+            querySnapshot.forEach(function (doc) {
+              console.log({ id: doc.id, data: doc.data() });
+              doc.ref.update({
+                locked: true,
+              });
             });
+          })
+          .catch(function (error) {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch(function (error) {
-          console.log("Error getting documents: ", error);
-        });
-     }
-     else if(this.userAction == "Create"){
-       this.$router.replace("/sign-up");
-     }
-     else if(this.userAction == "Delete"){
-        await db.collection(this.user_type + "s")
-        .where("email", "==", this.userFormEmail)
-        .get()
-        .then(function (querySnapshot) {
-          querySnapshot.forEach(function (doc) {
-            console.log({ id: doc.id, data: doc.data() });
-            doc.ref.delete();
+      } else if (this.userAction == "Create") {
+        this.$router.replace("/sign-up");
+      } else if (this.userAction == "Delete") {
+        await db
+          .collection(this.user_type + "s")
+          .where("email", "==", this.userFormEmail)
+          .get()
+          .then(function (querySnapshot) {
+            querySnapshot.forEach(function (doc) {
+              console.log({ id: doc.id, data: doc.data() });
+              doc.ref.delete();
+            });
+          })
+          .catch(function (error) {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch(function (error) {
-          console.log("Error getting documents: ", error);
-        });
-     }
-     else if(this.userAction == "Reset Password"){
-       this.resetPassword();
-     }
+      } else if (this.userAction == "Reset Password") {
+        this.resetPassword();
+      }
     },
   },
 };
