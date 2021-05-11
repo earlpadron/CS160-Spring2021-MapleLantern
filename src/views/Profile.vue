@@ -62,6 +62,7 @@
                   :isVenderCard="isVender"
                   :isAdminCard="isAdmin"
                   :id="n.id"
+                  :purchasedBy="n.data.purchasedBy"
                 />
               </div>
             </v-slide-item>
