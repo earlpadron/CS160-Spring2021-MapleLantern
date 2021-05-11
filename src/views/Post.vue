@@ -165,7 +165,7 @@ export default {
       cost: 0,
       Upload: null,
       Location: "",
-      cats:[],
+      cats: [],
     };
   },
   computed: {
@@ -190,7 +190,7 @@ export default {
         .where("email", "==", this.$store.state.user.email)
         .get();
       const docID = data.docs[0].id;
-      const user = "/ServiceProivders/" + docID;
+      const user = "/ServiceProviders/" + docID;
 
       db.collection("Activities")
         .add({
@@ -209,6 +209,16 @@ export default {
         })
         .then(() => {
           console.log("Successfully added the activity");
+          this.$refs.observer.reset();
+          this.fromDateVal = null;
+          this.toDateVal = null;
+          this.AgeGroup = null;
+          this.Name = "";
+          this.Description = "";
+          this.cost = 0;
+          this.Upload = null;
+          this.Location = "";
+          this.cats = [];
         })
         .catch((err) => {
           console.error("Error has occurred when added the data: ", err);
