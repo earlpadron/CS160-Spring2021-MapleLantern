@@ -206,6 +206,7 @@ export default {
           provider: user,
           address: this.Location,
           description: this.Description,
+          purchasedBy: 0,
         })
         .then(() => {
           console.log("Successfully added the activity");

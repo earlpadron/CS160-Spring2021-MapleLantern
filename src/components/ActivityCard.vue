@@ -10,6 +10,8 @@
     <v-card-text> Categories: {{ categories.join(", ") }}</v-card-text>
     <v-card-text> Age Group: {{ ageGroup }} </v-card-text>
     <v-card-text> Event Date: {{ eventStart }} - {{ eventEnd }} </v-card-text>
+    <v-card-text v-if="isVenderCard"> Purchased By: {{purchasedBy}} </v-card-text>
+
 
     <v-card-actions v-if="isActivityCard">
       <v-btn color="orange lighten-2" text @click="show = !show">
@@ -86,7 +88,7 @@ export default {
     vender: String,
     description: String,
     categories: Array,
-    ageGroup:String,
+    ageGroup: String,
     eventStart: String,
     eventEnd: String,
     isActivityCard: Boolean,
@@ -95,6 +97,7 @@ export default {
     isAdminCard: Boolean,
     address: String,
     id: String,
+    purchasedBy: Number,
   },
   methods: {
     leave: function () {
@@ -138,7 +141,7 @@ export default {
             points: this.points - this.cost,
             purchased: firebase.firestore.FieldValue.arrayUnion(adding),
           });
-           this.$store.state.user.points = this.points - this.cost;
+        this.$store.state.user.points = this.points - this.cost;
         alert("check the database");
       } else {
         alert(
