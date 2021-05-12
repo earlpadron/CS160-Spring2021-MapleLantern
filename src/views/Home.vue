@@ -188,6 +188,7 @@ export default {
 
     this.res = d;
     this.$store.state.allActivities = this.res;
+    this.$store.commit("setAllActivities", this.res);
   },
 
   computed: {
@@ -216,6 +217,7 @@ export default {
         .then(() => {
           this.$router.replace("login");
           alert("You are signed out");
+          this.$store.commit("resetState");
         });
     },
     post: function () {
@@ -244,6 +246,7 @@ export default {
       });
       this.res = d;
       this.$store.state.activities = d;
+      this.$store.commit("setActivities", d);
     },
 
     catFilter: async function (n) {
@@ -269,6 +272,7 @@ export default {
       }
       this.res = d;
       this.$store.state.activities = d;
+      this.$store.commit("setActivities", d);
     },
 
     ageFilter: async function (n) {
@@ -294,6 +298,7 @@ export default {
       }
       this.res = d;
       this.$store.state.activities = d;
+      this.$store.commit("setActivities", d);
     },
 
     filter: function (n) {

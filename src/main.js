@@ -8,6 +8,23 @@ import "firebase/auth"
 import vuetify from './plugins/vuetify';
 // import store from "./store";
 import Vuex from "vuex";
+import createPersistedState from 'vuex-persistedstate';
+
+const getDefaultState = () => {
+  return {
+    user: {
+      email: "",
+      userType: undefined,
+      points: 0,
+      name: undefined,
+      docID: "",
+      docPath: "",
+      allActivities: [],
+      activities: []
+    },
+    activities: []
+  }
+}
 
 Vue.use(Vuex);
 const store = new Vuex.Store({
@@ -24,7 +41,7 @@ const store = new Vuex.Store({
     },
     activities: []
   },
-  getter: {
+  getters: {
     getEmail: function () {
       return this.$state.email;
     },
@@ -33,12 +50,49 @@ const store = new Vuex.Store({
       return this.$state.results;
     }
   },
-  mutation: {
-
+  mutations: {
+    setEmail(state, email) {
+      state.user.email = email;
+    },
+    setUserType(state, userType) {
+      state.user.userType = userType;
+    },
+    setPoints(state, points) {
+      state.user.points = points;
+    },
+    setName(state, name) {
+      state.user.name = name;
+    },
+    setDocID(state, docID) {
+      state.user.docID = docID;
+    },
+    setDocPath(state, docPath) {
+      state.user.docPath = docPath;
+    },
+    setAllActivities(state, allActivities) {
+      state.user.allActivities = allActivities;
+    },
+    setActivities(state, activities) {
+      state.user.activities = activities;
+    },
+    // reset default state modules by looping around the initialStoreModules
+    resetState(state) {
+      // _.forOwn(initialStoreModules, (value, key) => {
+      //   state[key] = _.cloneDeep(value.state);
+      // });
+      Object.assign(state, getDefaultState())
+    },
   },
   action: {
 
-  }
+  },
+  plugins: [createPersistedState()]
+  // plugins: [
+  //   createPersistedState({
+  //     getState: (key) => Cookies.getJSON(key),
+  //     setState: (key, state) => Cookies.set(key, state, { expires: 3, secure: true })
+  //   })
+  // ]
 })
 
 Vue.config.productionTip = false

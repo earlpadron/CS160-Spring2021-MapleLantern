@@ -235,7 +235,9 @@ export default {
 
         const vendor = "/ServiceProviders/" + docID;
         this.$store.state.user.name = userData.name;
+        this.$store.commit("setName", userData.name);
         this.$store.state.user.points = userData.points;
+        this.$store.commit("setPoints", userData.points);
         this.name = this.$store.state.user.name;
         this.points = this.$store.state.user.points = userData.points;
 

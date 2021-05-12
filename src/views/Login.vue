@@ -80,14 +80,19 @@ export default {
 
       this.$store.state.user = {};
       this.$store.state.user.email = this.email;
+      this.$store.commit("setEmail", this.email);
 
       this.getUserType().then((res) => {
         this.$store.state.user.userType = res;
         this.getUserDetails(res).then((res) => {
           this.$store.state.user.name = res.name;
+          this.$store.commit("setName", res.name);
           this.$store.state.user.points = res.points;
+          this.$store.commit("setPoints", res.points);
           this.$store.state.user.docID = res.docID;
+          this.$store.commit("setDocID", res.docID);
           this.$store.state.user.docPath = res.docPath;
+          this.$store.commit("setDocPath", res.docPath);
         });
 
         console.log(this.$store.state);

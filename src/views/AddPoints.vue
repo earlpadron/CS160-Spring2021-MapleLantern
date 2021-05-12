@@ -95,6 +95,7 @@
                     "points": this.Points + this.prevpoints
                 })
                 this.$store.state.user.points = this.Points + this.prevpoints;
+                this.$store.commit("setPoints", this.Points + this.prevpoints);
                 alert("Purchase Successful!");
             } else {
                 this.$router.replace('/payment')

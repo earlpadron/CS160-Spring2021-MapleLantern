@@ -106,13 +106,62 @@ const router = new Router({
     ]
 });
 
+
+// firebase.auth().onAuthStateChanged((user) => {
+//     console.log("On Auth State Changed")
+//     if (!user) {
+//         // alert("No such user exits. Redirecting to login");
+//         router.replace('/home');
+//     } else {
+//         console.log("Sesión iniciada -> " + user.email);
+//     }
+// });
+
 router.beforeEach((to, from, next) => {
     const currentUser = firebase.auth().currentUser;
-    const requiresAuth =  to.matched.some(record => record.meta.requiresAuth);
+    const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
 
-    if (requiresAuth && !currentUser) next('login');
     // else if(!requiresAuth && currentUser) next('home');
-    else next();
+    if (to.name == "home") {
+        if (requiresAuth && !currentUser) {
+            next('login');
+        } else {
+            next();
+        }
+    } else {
+        next();
+    }
+
+    firebase.auth().onAuthStateChanged((user) => {
+        console.log("On Auth State Changed")
+        if (user) {
+            // alert("No such user exits. Redirecting to login");
+            // router.replace('/home');
+            // console.log(this.$store.state);
+            if (requiresAuth && !currentUser) {
+                next('login');
+            } else {
+                next();
+            }
+            // next();
+        } else {
+            // console.log("Sesión iniciada -> " + user.email);
+            // router.replace('/home');
+        }
+    });
 });
+
+// router.beforeEach((to, from, next) => {
+//     let requiresAuth = to.matched.some(record => record.meta.requiresAuth);
+//     const user = firebase.auth().currentUser;
+//     firebase.auth().onAuthStateChanged((user) => {
+//         if (requiresAuth && !user) {
+//             alert("Please login");
+//             next('/login');
+//         } else {
+//             next();
+//         }
+//     });
+// })
 
 export default router;

@@ -58,6 +58,7 @@ export default {
         .then(() => {
           this.$router.replace("login");
           alert("You are signed out");
+          this.$store.commit("resetState");
         });
     },
   },

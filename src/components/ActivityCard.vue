@@ -105,19 +105,6 @@ export default {
       alert(`Redirecting to login page`);
     },
     purchase: async function () {
-      // let currentUser;
-      // firebase.auth().onAuthStateChanged(function (user) {
-      //   currentUser = user;
-      // });
-      // if (currentUser) {
-      //   // User is signed in.
-      // } else {
-      //   // No user is signed in.
-      //   this.$router.replace("/login");
-      //   alert(`Redirecting to login page`);
-      // }
-      //alert("aaaa")
-      //alert(this.docID);
       const db = firebase.firestore();
       const data = await db
         .collection("Activities")
@@ -142,6 +129,7 @@ export default {
             purchased: firebase.firestore.FieldValue.arrayUnion(adding),
           });
         this.$store.state.user.points = this.points - this.cost;
+        this.$store.commit("setPoints", this.points - this.cost);
         alert("check the database");
       } else {
         alert(
