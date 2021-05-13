@@ -3,6 +3,12 @@
     <v-app id="inspire">
       <v-main>
         <v-container>
+          <v-alert dismissible type="info" v-if="successReset">
+            Password Email Reset Sent.
+          </v-alert>
+           <v-alert dismissible type="error" v-if="successResetError">
+      I'm an info alert.
+    </v-alert>
           <v-spacer></v-spacer>
           <v-card class="mx-auto" max-width="85%">
             <v-row>
@@ -145,6 +151,8 @@ export default {
         (v) => !!v || "E-mail is required",
         (v) => /.+@.+/.test(v) || "E-mail must be valid",
       ],
+      successReset:false,
+      successResetError:false,
     };
   },
   computed: {
@@ -166,12 +174,10 @@ export default {
         .signOut()
         .then(() => {
           this.$router.replace("login");
-          alert("You are signed out");
         });
     },
     post: function () {
       this.$router.replace("/post");
-      alert("Redirecting to post creation page");
     },
     getCardsData: async function () {
       const db = firebase.firestore();
@@ -280,11 +286,13 @@ export default {
       auth
         .sendPasswordResetEmail(this.userFormEmail)
         .then(() => {
-          alert("Password Email Reset Sent.");
+          this.successReset = true;
         })
         .catch((error) => {
-          console.error(error);
+          this.successResetError = true;
         });
+      this.successReset = false;
+      this.successResetError = false;
     },
 
     manageUser: async function () {

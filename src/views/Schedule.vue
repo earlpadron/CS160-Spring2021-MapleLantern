@@ -32,13 +32,12 @@ export default {
     methods: {
         logout: function() {
             firebase.auth().signOut().then(() => {
-                this.$router.replace('login')
-                alert('You are signed out')
+                this.$router.replace('login');
             })
         },
         post: function() {
-            this.$router.replace('/post')
-            alert('Redirecting to post creation page')
+            this.$router.replace('/post');
+
         }
     }
 }

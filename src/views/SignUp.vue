@@ -3,6 +3,10 @@
     <v-container></v-container>
     <v-container></v-container>
     <v-container>
+            <v-alert type="success" dismissible v-if="success"
+        >Account created!</v-alert>
+              <v-alert type="error" dismissible v-if="error"
+        >Error in creating account</v-alert>
       <v-card class="mx-auto" max-width="500">
         <v-form class="pa-5" ref="form" lazy-validation>
           <v-text-field
@@ -72,6 +76,8 @@ export default {
       pvisvalue: String,
       userType: "",
       userTypes: ["Citizen", "Service Provider"],
+      success:false,
+      error:false,
     };
   },
   methods: {
@@ -117,12 +123,14 @@ export default {
         .createUserWithEmailAndPassword(this.email, this.password)
         .then(() => {
           this.addUser(this.name, this.email, this.userType);
+          this.success = true;
           this.$router.push("/home");
-          alert("Your account has been created!");
         })
         .catch((error) => {
-          alert(error.message);
+          this.error = true;
         });
+      this.success = false;
+      this.error = false;
     }
   }
 };

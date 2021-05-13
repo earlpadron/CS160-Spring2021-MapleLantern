@@ -1,5 +1,7 @@
 <template>
   <div id="map">
+          <v-alert type="error" dismissible v-if="error"
+        >Error in loading map</v-alert>
   <!--In the following div the HERE Map will render-->
     <div id="mapContainer" style="height:600px;width:100%" ref="hereMap"></div>
   </div>
@@ -17,6 +19,7 @@ export default {
       origin: "",
       location: null,
       route: null,
+      error: false,
     };
   },
   props: ['destination', 'propPlace'],
@@ -119,12 +122,15 @@ export default {
             router.calculateRoute(routingParameters, onResult,
               function(error) {
                 alert('error: ', error);
+                this.error = true;
             });
 
           });
         }, error => {
-          console.log(error)
+          console.log(error);
+          this.error = true;
         });
+        this.error = false
       }
 
       addEventListener("resize", () => map.getViewPort().resize());

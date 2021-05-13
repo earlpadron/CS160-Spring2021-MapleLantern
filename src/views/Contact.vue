@@ -1,7 +1,10 @@
 <template>
-  <div class='contact'>
+  <div class="contact">
     <v-container></v-container>
     <v-container>
+      <v-alert type="success" dismissible v-if="success"
+        >Successfully submited message</v-alert
+      >
       <v-form>
         <v-text-field
           v-model="name"
@@ -45,6 +48,7 @@ export default {
         (v) => /.+@.+\..+/.test(v) || "E-mail must be valid",
       ],
       message: "",
+      success: false,
     };
   },
   methods: {
@@ -58,17 +62,21 @@ export default {
           reviewed: false,
         })
         .then(() => {
-          alert("Successfully submited message");
+          this.name = "";
+          this.email = "";
+          this.message = "";
+          this.success = true;
         })
         .catch((err) => {
           console.error("Error has occurred when added the data: ", err);
         });
+        this.success = false;
     },
   },
 };
 </script>
 <style scoped>
-.contact{
-    padding-top: 50px;
+.contact {
+  padding-top: 50px;
 }
 </style>

@@ -172,6 +172,7 @@ export default {
         page: 1,
         perPage: 8,
       },
+
     };
   },
   async created() {
@@ -222,13 +223,11 @@ export default {
         .signOut()
         .then(() => {
           this.$router.replace("login");
-          alert("You are signed out");
           this.$store.commit("resetState");
         });
     },
     post: function () {
       this.$router.replace("/post");
-      alert("Redirecting to post creation page");
     },
     search: function () {
       const keywords = this.searchKeywords.split(/(\s+)/);
@@ -312,11 +311,9 @@ export default {
     },
     leave: function (n) {
       this.$router.replace(`/${n}`);
-      alert(`Redirecting to ${n} page`);
     },
     login: function () {
       this.$router.replace("/login");
-      alert(`Redirecting to login page`);
     },
   },
 };

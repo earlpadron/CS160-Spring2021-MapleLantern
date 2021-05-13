@@ -1,62 +1,74 @@
 <template>
-  <v-card class="mx-auto" max-width="344">
-    <v-img
-      src="https://cdn.vuetifyjs.com/images/cards/sunshine.jpg"
-      height="200px"
-    ></v-img>
+  <div>
+    <v-snackbar v-model="snackbar" :multi-line="multiLine">
+      You currently do not have sufficient points to purchase this activity.
+      Please purchase more points first
+      <template v-slot:action="{ attrs }">
+        <v-btn color="orange" text v-bind="attrs" @click="snackbar = false">
+          Close
+        </v-btn>
+      </template>
+    </v-snackbar>
+    <v-card class="mx-auto" max-width="344">
+      <v-img
+        src="https://cdn.vuetifyjs.com/images/cards/sunshine.jpg"
+        height="200px"
+      ></v-img>
 
-    <v-card-title> {{ activityName }} </v-card-title>
-    <v-card-text> Cost:{{ cost }} points </v-card-text>
-    <v-card-text> Categories: {{ categories.join(", ") }}</v-card-text>
-    <v-card-text> Age Group: {{ ageGroup }} </v-card-text>
-    <v-card-text> Event Date: {{ eventStart }} - {{ eventEnd }} </v-card-text>
-    <v-card-text v-if="isVenderCard"> Purchased By: {{purchasedBy}} </v-card-text>
+      <v-card-title> {{ activityName }} </v-card-title>
+      <v-card-text> Cost:{{ cost }} points </v-card-text>
+      <v-card-text> Categories: {{ categories.join(", ") }}</v-card-text>
+      <v-card-text> Age Group: {{ ageGroup }} </v-card-text>
+      <v-card-text> Event Date: {{ eventStart }} - {{ eventEnd }} </v-card-text>
+      <v-card-text v-if="isVenderCard">
+        Purchased By: {{ purchasedBy }}
+      </v-card-text>
 
+      <v-card-actions v-if="isActivityCard">
+        <v-btn color="orange lighten-2" text @click="show = !show">
+          Details
+        </v-btn>
+        <v-btn color="orange lighten-2" text @click="purchase()">
+          Purchase
+        </v-btn>
+        <v-spacer></v-spacer>
+      </v-card-actions>
 
-    <v-card-actions v-if="isActivityCard">
-      <v-btn color="orange lighten-2" text @click="show = !show">
-        Details
-      </v-btn>
-      <v-btn color="orange lighten-2" text @click="purchase()">
-        Purchase
-      </v-btn>
-      <v-spacer></v-spacer>
-    </v-card-actions>
+      <v-card-actions v-if="isProfileCard">
+        <v-btn color="orange lighten-2" text @click="show = !show">
+          Details
+        </v-btn>
+        <v-spacer></v-spacer>
+      </v-card-actions>
 
-    <v-card-actions v-if="isProfileCard">
-      <v-btn color="orange lighten-2" text @click="show = !show">
-        Details
-      </v-btn>
-      <v-spacer></v-spacer>
-    </v-card-actions>
+      <v-card-actions v-if="isVenderCard">
+        <v-spacer></v-spacer>
+      </v-card-actions>
 
-    <v-card-actions v-if="isVenderCard">
-      <v-spacer></v-spacer>
-    </v-card-actions>
+      <v-card-actions v-if="isAdminCard">
+        <v-btn color="green lighten-2" text @click="approve()"> Approve </v-btn>
+        <v-btn color="red lighten-2" text @click="deny()"> Deny </v-btn>
+        <v-spacer></v-spacer>
+      </v-card-actions>
 
-    <v-card-actions v-if="isAdminCard">
-      <v-btn color="green lighten-2" text @click="approve()"> Approve </v-btn>
-      <v-btn color="red lighten-2" text @click="deny()"> Deny </v-btn>
-      <v-spacer></v-spacer>
-    </v-card-actions>
+      <v-expand-transition>
+        <div v-show="show">
+          <v-divider></v-divider>
+          <v-card-text> {{ description }} </v-card-text>
 
-    <v-expand-transition>
-      <div v-show="show">
-        <v-divider></v-divider>
-        <v-card-text> {{ description }} </v-card-text>
-
-        <router-link
-          :to="{
-            name: 'MapView',
-            params: { destination: location, propPlace: origin },
-          }"
-        >
-          <v-btn class="ma-5">Location</v-btn>
-        </router-link>
-        <!-- </v-btn> -->
-      </div>
-    </v-expand-transition>
-  </v-card>
+          <router-link
+            :to="{
+              name: 'MapView',
+              params: { destination: location, propPlace: origin },
+            }"
+          >
+            <v-btn class="ma-5">Location</v-btn>
+          </router-link>
+          <!-- </v-btn> -->
+        </div>
+      </v-expand-transition>
+    </v-card>
+  </div>
 </template>
 
 
@@ -76,6 +88,8 @@ export default {
       //set address to actual event address
       location: "200 S Mathilda Ave, Sunnyvale, CA",
       origin: null,
+      multiLine: true,
+      snackbar: false,
     };
   },
   mounted() {
@@ -102,7 +116,6 @@ export default {
   methods: {
     leave: function () {
       this.$router.replace("/login");
-      alert(`Redirecting to login page`);
     },
     purchase: async function () {
       const db = firebase.firestore();
@@ -113,11 +126,8 @@ export default {
       const activityDocID = data.docs[0].id;
       const activityRef = "/Activities/" + activityDocID;
       //alert(activityDocID)
-      console.log("here1 ");
+
       if (this.points >= this.cost) {
-        console.log("here 2 ");
-        console.log(activityRef);
-        console.log(this.docID);
         var adding = {
           activity: db.doc("/Activities/" + activityDocID),
           datePurchased: Date.now(),
@@ -130,11 +140,8 @@ export default {
           });
         this.$store.state.user.points = this.points - this.cost;
         this.$store.commit("setPoints", this.points - this.cost);
-        alert("check the database");
       } else {
-        alert(
-          "You currently do not have sufficient points to purchase this activity. Please purchase more points first"
-        );
+        this.snackbar = true;
       }
     },
     approve: async function () {

@@ -71,10 +71,9 @@ export default {
             .signInWithEmailAndPassword(this.email, this.password)
             .then(() => {
               this.$router.push("/home");
-              alert("You are now connected!");
             })
             .catch((error) => {
-              alert(error.message);
+              console.err(error.message);
             });
         });
 

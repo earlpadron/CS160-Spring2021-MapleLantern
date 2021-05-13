@@ -15,7 +15,7 @@
       </v-container>
       <v-spacer></v-spacer>
     </v-app-bar>
-    
+
     <v-container>
       <v-main>
         <router-view />
@@ -51,7 +51,7 @@ export default {
   methods: {
     leave: function (n) {
       this.$router.replace(`/${n}`);
-      alert(`Redirecting to ${n} page`);
+      // alert(`Redirecting to ${n} page`);
     },
     logout: function () {
       firebase
@@ -59,7 +59,6 @@ export default {
         .signOut()
         .then(() => {
           this.$router.replace("login");
-          alert("You are signed out");
           this.$store.commit("resetState");
         });
     },

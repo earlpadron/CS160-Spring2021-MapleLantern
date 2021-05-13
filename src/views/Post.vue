@@ -3,6 +3,9 @@
     <v-container></v-container>
     <v-container></v-container>
     <v-container>
+      <v-alert type="success" dismissible v-if="success"
+        >Successfully submited an event</v-alert
+      >
       <v-card class="mx-auto" max-width="800">
         <v-form class="pa-5" ref="form">
           <!-- v-model="valid" lazy-validation> -->
@@ -166,6 +169,7 @@ export default {
       Upload: null,
       Location: "",
       cats: [],
+      success: false,
     };
   },
   computed: {
@@ -209,8 +213,6 @@ export default {
           purchasedBy: 0,
         })
         .then(() => {
-          console.log("Successfully added the activity");
-          this.$refs.observer.reset();
           this.fromDateVal = null;
           this.toDateVal = null;
           this.AgeGroup = null;
@@ -220,10 +222,12 @@ export default {
           this.Upload = null;
           this.Location = "";
           this.cats = [];
+          this.success = true;
         })
         .catch((err) => {
           console.error("Error has occurred when added the data: ", err);
         });
+      this.success = false;
     },
   },
 };
