@@ -3,18 +3,23 @@
     <v-app id="inspire">
       <v-main>
         <v-container>
-          <v-card class="mx-auto" max-width="85%" tile>
-            <v-img
+          <v-spacer></v-spacer>
+          <v-card class="mx-auto" max-width="85%">
+            <!-- <v-img
               height="200"
               src="https://cdn.vuetifyjs.com/images/cards/server-room.jpg"
-            ></v-img>
+            ></v-img> -->
+            <v-container></v-container>
             <v-row>
               <!-- Style for the v-row -->
               <!-- style="margin: 2.5%; position: absolute; top: 130px"> -->
               <v-list-item>
                 <v-list-item-avatar size="100">
-                  <v-avatar class="ma-md-15 mx-md-15" color="red" size="164">
+                  <!-- <v-avatar class="ma-md-15 mx-md-15" color="red" size="164">
                     <span class="white--text headline">{{ initials }}</span>
+                  </v-avatar> -->
+                  <v-avatar color="orange" size="164">
+                    <v-icon dark> mdi-account-circle </v-icon>
                   </v-avatar>
                 </v-list-item-avatar>
                 <v-list-item-content>

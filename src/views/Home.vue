@@ -9,9 +9,12 @@
     <v-app id="inspire">
       <v-app-bar app color="white" flat>
         <v-container class="py-0 fill-height">
-          <v-avatar class="mr-10" color="green darken-1" size="32"
+          <!-- <v-avatar class="mr-10" color="green darken-1" size="32"
             ><span class="white--text headline">{{ initials }}</span></v-avatar
-          >
+          > -->
+          <v-avatar color="orange">
+            <v-icon dark> mdi-account-circle </v-icon>
+          </v-avatar>
 
           <v-btn v-for="link in links" :key="link" text @click="leave(link)">
             {{ link }}
@@ -99,7 +102,7 @@
             <v-col col>
               <v-sheet min-height="70vh" rounded="sm">
                 <v-row no-gutters>
-                <!-- <v-row :align-content="start" :align="start"> -->
+                  <!-- <v-row :align-content="start" :align="start"> -->
                   <v-col v-for="n of visiblePages" :key="n.name">
                     <activity-card
                       class="ma-md-1 mx-md-1"
@@ -142,7 +145,9 @@ export default {
       links:
         this.$store.state.user.userType == "ServiceProvider"
           ? ["payment", "post", "profile", "contact"]
-          : ["payment", "profile","contact"],
+          : this.$store.state.user.userType == "Admin"
+          ? ["profile"]
+          : ["payment", "profile", "contact"],
       categories: [
         "Volunteering",
         "Tutoring",

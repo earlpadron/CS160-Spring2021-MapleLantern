@@ -138,7 +138,7 @@ router.beforeEach((to, from, next) => {
             // alert("No such user exits. Redirecting to login");
             // router.replace('/home');
             // console.log(this.$store.state);
-            if (requiresAuth && !currentUser) {
+            if (requiresAuth && !user) {
                 next('login');
             } else {
                 next();
