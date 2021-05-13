@@ -9,14 +9,12 @@
         </v-btn>
       </template>
     </v-snackbar>
-      <v-img
-        src="https://cdn.vuetifyjs.com/images/cards/sunshine.jpg"
-        height="200px"
-      ></v-img>
+
   <v-card class="mx-auto" max-width="344">
     <v-img
       :src= imageUrl
       height="200px"
+      @click="getImageUrl()"
     ></v-img>
 
       <v-card-title> {{ activityName }} </v-card-title>
@@ -208,6 +206,9 @@ export default {
       if (this.address != null) {
         this.location = this.address;
       }
+    },
+    getImageUrl: function() {
+      console.log("imageUrl: ", this.imageUrl)
     },
   },
 };
