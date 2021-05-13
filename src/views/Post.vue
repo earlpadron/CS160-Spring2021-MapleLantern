@@ -13,10 +13,8 @@
               v-model="fromDateMenu"
               :close-on-content-click="false"
               :nudge-right="40"
-              lazy
               transition="scale-transition"
               offset-y
-              full-width
               max-width="290px"
               min-width="290px"
             >
@@ -45,10 +43,8 @@ use this package: https://stackoverflow.com/questions/58228404/implement-datetim
               v-model="toDateMenu"
               :close-on-content-click="false"
               :nudge-right="40"
-              lazy
               transition="scale-transition"
               offset-y
-              full-width
               max-width="290px"
               min-width="290px"
             >
@@ -101,11 +97,24 @@ use this package: https://stackoverflow.com/questions/58228404/implement-datetim
             type="number"
           />
 
+          <v-btn raised @click="onPickFile"> Upload Image </v-btn>
+          <input 
+            type="file" 
+            style="display: none" 
+            ref="fileInput" 
+            accept="image/*"
+            @change="onFilePicked">
+
           <v-file-input
             v-model="Upload"
             label="Upload an image"
             required
           ></v-file-input>
+
+          <v-flex xs12 sm6 offset-sm3>
+            <img :src="imageUrl" height="150">
+          </v-flex>
+
 
           <v-btn color="success" class="mr-4" @click="post()">
             <!-- :disabled="!valid" -->
@@ -148,6 +157,8 @@ export default {
       cost: 0,
       Upload: null,
       Location: "",
+      imageUrl: "https://cdn.vuetifyjs.com/images/cards/sunshine.jpg",
+      filename: "",
     };
   },
   computed: {
@@ -173,7 +184,8 @@ export default {
         .get();
       const docID = data.docs[0].id;
       const user = "/ServiceProivders/" + docID;
-
+      
+      let key
       db.collection("Activities")
         .add({
           ageGroup: this.AgeGroup,
@@ -187,6 +199,31 @@ export default {
           name: this.Name,
           provider: user,
           address: this.Location,
+          // image: this.Upload,
+        })
+        .then((docRef) => {
+          console.log("Document written with ID: ", docRef.id);
+          key = docRef.id
+          return key
+        })
+        .then(key => {
+          // console.log("Document written with ID: ", key);
+          const ext = this.filename.slice(this.filename.lastIndexOf('.'))
+          console.log("ext: ", ext);
+          return firebase.storage().ref('postImages/' + key + ext).put(this.Upload)
+        })
+        .then(boob => {
+          const ext = this.filename.slice(this.filename.lastIndexOf('.'))
+          return firebase.storage().ref().child('postImages/' + key + ext).getDownloadURL()
+        })
+        .then(fileData => {
+          // const ext = this.filename.slice(this.filename.lastIndexOf('.'))
+          this.imageUrl = fileData//firebase.storage().ref().child('postImages/' + key + ext).getDownloadURL() //fileData.metadata.getDownloadURL()
+          console.log("firebase.storage().ref().child('postImages/' + key + ext): ", fileData);
+          
+          // downloadURLs[0]
+          console.log("this.imageUrl: ", this.imageUrl);
+          return db.collection("Activities").doc(key).update({imageUrl: this.imageUrl})
         })
         .then(() => {
           console.log("Successfully added the activity");
@@ -195,6 +232,22 @@ export default {
           console.error("Error has occurred when added the data: ", err);
         });
     },
+    onPickFile () {
+      this.$refs.fileInput.click()
+    },
+    onFilePicked (event) {
+      const files = event.target.files
+      this.filename = files[0].name
+      if (this.filename.lastIndexOf('.') <= 0) {
+        return alert('Please add a valid file!')
+      }
+      const fileReader = new FileReader()
+      fileReader.addEventListener('load', () => {
+        this.imageUrl = fileReader.result
+      })
+      fileReader.readAsDataURL(files[0])
+      this.Upload = files[0]
+    }
   },
 };
 </script>
