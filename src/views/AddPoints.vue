@@ -92,7 +92,7 @@ export default {
             this.$router.replace("/payment");
             this.error = true;
           }
-          this.success = false;
+          this.success = true;
           this.error = false;
         })
         .catch((error) => {

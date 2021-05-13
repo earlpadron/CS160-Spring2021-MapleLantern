@@ -125,9 +125,9 @@ export default {
       this.$router.replace("/login");
     },
     purchase: async function () {
-      if(this.user == ''){
-        this.$router.replace("/login");
-      }
+      // if(this.user == ''){
+      //   this.$router.replace("/login");
+      // }
 
       const db = firebase.firestore();
       const data = await db
@@ -148,7 +148,20 @@ export default {
               prov = doc.data().provider;
             });
           });
+      console.log("provider");
       console.log(prov);
+
+      var providerRef = db.doc(prov);
+        // Atomically increment the provider's points by cost.
+        providerRef.update({
+            points: firebase.firestore.FieldValue.increment(this.cost)
+        });
+
+      if(this.user == ''){
+        alert("akjsdfsk");
+        //this.$router.replace("/login");
+      }
+      else{
 
       if (this.points >= this.cost) {
         var adding = {
@@ -164,14 +177,15 @@ export default {
         this.$store.state.user.points = this.points - this.cost;
         this.$store.commit("setPoints", this.points - this.cost);
 
-        var providerRef = db.doc(prov);
-        // Atomically increment the provider's points by cost.
-        providerRef.update({
-            points: firebase.firestore.FieldValue.increment(this.cost)
-        });
+        // var providerRef = db.doc(prov);
+        // // Atomically increment the provider's points by cost.
+        // providerRef.update({
+        //     points: firebase.firestore.FieldValue.increment(this.cost)
+        // });
         this.success = true;
       } else {
         this.snackbar = true;
+      }
       }
     },
     approve: async function () {
