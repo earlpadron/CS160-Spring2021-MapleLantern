@@ -9,7 +9,6 @@
         </v-btn>
       </template>
     </v-snackbar>
-    <v-card class="mx-auto" max-width="344">
       <v-img
         src="https://cdn.vuetifyjs.com/images/cards/sunshine.jpg"
         height="200px"

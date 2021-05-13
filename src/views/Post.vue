@@ -207,6 +207,7 @@ export default {
       const docID = data.docs[0].id;
       const user = "/ServiceProviders/" + docID;
 
+      let key;
       db.collection("Activities")
         .add({
           ageGroup: this.AgeGroup,
