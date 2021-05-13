@@ -3,10 +3,10 @@
     <v-app-bar app color="white" fixed>
       <v-container class="py-0 fill-height">
         <div v-if="loggedIn">
-        <v-btn v-for="link in links" :key="link" text @click="leave(link)" >
-          {{ link }}
-        </v-btn>
-        <v-btn text @click="logout"> Logout </v-btn>
+          <v-btn v-for="link in links" :key="link" text @click="leave(link)">
+            {{ link }}
+          </v-btn>
+          <v-btn text @click="logout"> Logout </v-btn>
         </div>
         <div v-else @click="leave('home')">
           <h2 class="font-weight-light" id="name" text>Maple Lantern</h2>
@@ -15,10 +15,11 @@
       </v-container>
       <v-spacer></v-spacer>
     </v-app-bar>
+    
     <v-container>
-    <v-main>
-      <router-view />
-    </v-main>
+      <v-main>
+        <router-view />
+      </v-main>
     </v-container>
   </v-app>
 </template>
@@ -34,14 +35,14 @@ export default {
   }),
 
   watch: {
-    loggedIn: function(){
+    loggedIn: function () {
       var user = firebase.auth().currentUser;
 
       if (user) {
         // User is signed in.
         this.loggedIn = true;
       }
-    }
+    },
 
     //  else {
     //   // No user is signed in.
@@ -66,7 +67,7 @@ export default {
 };
 </script>
 <style scoped>
-#name{
-  color:orange
+#name {
+  color: orange;
 }
 </style>
