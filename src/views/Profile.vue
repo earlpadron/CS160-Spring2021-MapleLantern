@@ -60,11 +60,17 @@
                 >
                   <h2 class="font-weight-light">Points: {{ points }}</h2>
                 </div>
-                <v-list-item-subtitle v-if="userType == 'Citizen'"
-                  ><a v-on:click="payment()">
-                    <h2 class="font-weight-light">Add points</h2>
-                  </a></v-list-item-subtitle
-                >
+                <v-list-item-subtitle v-if="userType == 'Citizen'">
+                  <v-btn
+                    class="ma-2"
+                    outlined
+                    x-small
+                    color="orange"
+                    @click="payment()"
+                  >
+                    Add points
+                  </v-btn>
+                </v-list-item-subtitle>
               </v-list-item-content>
             </v-list-item>
           </v-row>
@@ -424,7 +430,6 @@ export default {
             .doc(key)
             .update({ profilePic: this.imageUrl });
         });
-
     },
   },
 };
