@@ -128,25 +128,23 @@ router.beforeEach((to, from, next) => {
         } else {
             next();
         }
-    } else {
-        next();
-    }
-
+    } 
+  
     firebase.auth().onAuthStateChanged((user) => {
         console.log("On Auth State Changed")
         if (user) {
-            // alert("No such user exits. Redirecting to login");
-            // router.replace('/home');
-            // console.log(this.$store.state);
-            if (requiresAuth && !user) {
+            if (requiresAuth) {
                 next('login');
             } else {
                 next();
             }
-            // next();
+
         } else {
-            // console.log("Sesión iniciada -> " + user.email);
-            // router.replace('/home');
+            if (requiresAuth) {
+                next('login');
+            } else {
+                next();
+            }
         }
     });
 });
