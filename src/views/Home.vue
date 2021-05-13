@@ -141,8 +141,8 @@ export default {
     return {
       links:
         this.$store.state.user.userType == "ServiceProvider"
-          ? ["payment", "post", "profile"]
-          : ["payment", "profile"],
+          ? ["payment", "post", "profile", "contact"]
+          : ["payment", "profile","contact"],
       categories: [
         "Volunteering",
         "Tutoring",
