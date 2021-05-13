@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-app-bar app color="white">
+    <v-app-bar app color="white" fixed>
       <v-container class="py-0 fill-height">
         <div v-if="loggedIn">
         <v-btn v-for="link in links" :key="link" text @click="leave(link)" >
@@ -15,10 +15,11 @@
       </v-container>
       <v-spacer></v-spacer>
     </v-app-bar>
-
+    <v-container>
     <v-main>
       <router-view />
     </v-main>
+    </v-container>
   </v-app>
 </template>
 
