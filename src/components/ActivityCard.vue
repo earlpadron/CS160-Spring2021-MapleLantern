@@ -121,6 +121,10 @@ export default {
       this.$router.replace("/login");
     },
     purchase: async function () {
+      if(this.user == ''){
+        this.$router.replace("/login");
+      }
+
       const db = firebase.firestore();
       const data = await db
         .collection("Activities")
@@ -128,7 +132,19 @@ export default {
         .get();
       const activityDocID = data.docs[0].id;
       const activityRef = "/Activities/" + activityDocID;
-      //alert(activityDocID)
+
+      let prov = "";
+      await db
+        .collection("Activities")
+        .where("name", "==", this.activityName)
+        .get()
+        .then(function (querySnapshot) {
+            querySnapshot.forEach(function (doc) {
+              console.log(doc.id, " => ", doc.data());
+              prov = doc.data().provider;
+            });
+          });
+      console.log(prov);
 
       if (this.points >= this.cost) {
         var adding = {
@@ -143,6 +159,13 @@ export default {
           });
         this.$store.state.user.points = this.points - this.cost;
         this.$store.commit("setPoints", this.points - this.cost);
+
+        var providerRef = db.doc(prov);
+        // Atomically increment the provider's points by cost.
+        providerRef.update({
+            points: firebase.firestore.FieldValue.increment(this.cost)
+        });
+
       } else {
         this.snackbar = true;
       }
