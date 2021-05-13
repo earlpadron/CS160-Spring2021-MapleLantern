@@ -9,6 +9,9 @@
         </v-btn>
       </template>
     </v-snackbar>
+    <v-alert type="success" dismissible v-if="success"
+        >Successfully purchased this activity!</v-alert
+      >
 
   <v-card class="mx-auto" max-width="344">
     <v-img
@@ -92,6 +95,7 @@ export default {
       origin: null,
       multiLine: true,
       snackbar: false,
+      success: false
     };
   },
   mounted() {
@@ -165,7 +169,7 @@ export default {
         providerRef.update({
             points: firebase.firestore.FieldValue.increment(this.cost)
         });
-
+        this.success = true;
       } else {
         this.snackbar = true;
       }
