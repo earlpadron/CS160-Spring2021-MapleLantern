@@ -21,7 +21,7 @@ const getDefaultState = () => {
       docPath: "",
       allActivities: [],
       activities: [],
-      profilePic:"",
+      profilePic: "",
     },
     activities: []
   }
@@ -39,7 +39,7 @@ const store = new Vuex.Store({
       docPath: "",
       allActivities: [],
       activities: [],
-      profilePic:"",
+      profilePic: "",
     },
     activities: []
   },
@@ -80,18 +80,16 @@ const store = new Vuex.Store({
     setProfilePic(state, profilePic) {
       state.user.profilePic = profilePic;
     },
-    // reset default state modules by looping around the initialStoreModules
     resetState(state) {
-      // _.forOwn(initialStoreModules, (value, key) => {
-      //   state[key] = _.cloneDeep(value.state);
-      // });
       Object.assign(state, getDefaultState())
     },
   },
   action: {
 
   },
-  plugins: [createPersistedState()]
+  plugins: [createPersistedState({
+    storage: window.sessionStorage,
+  })]
 
 })
 
