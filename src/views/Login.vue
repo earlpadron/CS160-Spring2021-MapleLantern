@@ -92,6 +92,8 @@ export default {
           this.$store.commit("setDocID", res.docID);
           this.$store.state.user.docPath = res.docPath;
           this.$store.commit("setDocPath", res.docPath);
+          this.$store.state.user.profilePic = res.profilePic;
+          this.$store.commit("setProfilePic", res.profilePic);
         });
 
         console.log(this.$store.state);
@@ -149,6 +151,7 @@ export default {
             userData.docPath = "/" + userType + "s/" + doc.id;
             userData.name = doc.data().name;
             userData.points = doc.data().points;
+            userData.profilePic = doc.data().profilePic;
           });
         });
 

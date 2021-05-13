@@ -20,7 +20,8 @@ const getDefaultState = () => {
       docID: "",
       docPath: "",
       allActivities: [],
-      activities: []
+      activities: [],
+      profilePic:"",
     },
     activities: []
   }
@@ -37,7 +38,8 @@ const store = new Vuex.Store({
       docID: "",
       docPath: "",
       allActivities: [],
-      activities: []
+      activities: [],
+      profilePic:"",
     },
     activities: []
   },
@@ -75,6 +77,9 @@ const store = new Vuex.Store({
     setActivities(state, activities) {
       state.user.activities = activities;
     },
+    setProfilePic(state, profilePic) {
+      state.user.profilePic = profilePic;
+    },
     // reset default state modules by looping around the initialStoreModules
     resetState(state) {
       // _.forOwn(initialStoreModules, (value, key) => {
@@ -87,12 +92,7 @@ const store = new Vuex.Store({
 
   },
   plugins: [createPersistedState()]
-  // plugins: [
-  //   createPersistedState({
-  //     getState: (key) => Cookies.getJSON(key),
-  //     setState: (key, state) => Cookies.set(key, state, { expires: 3, secure: true })
-  //   })
-  // ]
+
 })
 
 Vue.config.productionTip = false

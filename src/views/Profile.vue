@@ -1,128 +1,157 @@
 <template>
   <div class="profile" style="overflow: hidden">
-    <v-app id="inspire">
-      <v-main>
-        <v-container>
-          <v-alert dismissible type="info" v-if="successReset">
-            Password Email Reset Sent.
-          </v-alert>
-           <v-alert dismissible type="error" v-if="successResetError">
-      I'm an info alert.
-    </v-alert>
-          <v-spacer></v-spacer>
-          <v-card class="mx-auto" max-width="85%">
-            <v-row>
-              <v-list-item>
-                <v-list-item-content>
+    <v-container></v-container>
+    <v-container></v-container>
+    <v-container>
+      <v-container>
+        <v-alert dismissible type="info" v-if="successReset">
+          Password Email Reset Sent.
+        </v-alert>
+        <v-alert dismissible type="error" v-if="successResetError">
+          I'm an info alert.
+        </v-alert>
+        <v-spacer></v-spacer>
+        <v-card class="mx-auto" max-width="85%">
+          <v-row>
+            <v-list-item>
+              <v-list-item-content>
+                <div v-if="hasProfilePic">
+                  <v-avatar>
+                    <img
+                      :src="imageUrl"
+                      height="150"
+                      alt="profile picture"
+                      size="150"
+                    />
+                  </v-avatar>
+                </div>
+                <div v-else>
                   <v-avatar color="orange" size="150">
                     <v-icon dark> mdi-account-circle </v-icon>
                   </v-avatar>
-                  <div class="text-center">
-                    <h1 class="font-weight-light">{{ name }}</h1>
-                  </div>
-                  <div class="text-center">
-                    <h2 class="font-weight-light">{{ userType }}</h2>
-                  </div>
-                  <div
-                    v-if="
-                      userType == 'Citizen' || userType == 'ServiceProvider'
-                    "
+                </div>
+                <div>
+                  <v-btn
+                    class="ma-2"
+                    outlined
+                    x-small
+                    color="orange"
+                    @click="onPickFile"
                   >
-                    <h2 class="font-weight-light">Points: {{ points }}</h2>
-                  </div>
-                  <v-list-item-subtitle v-if="userType == 'Citizen'"
-                    ><a v-on:click="payment()">
-                      <h2 class="font-weight-light">Add points</h2>
-                    </a></v-list-item-subtitle
-                  >
-                </v-list-item-content>
-              </v-list-item>
-            </v-row>
-          </v-card>
-        </v-container>
-        <v-sheet class="mx-auto mt-5" max-width="80%">
-          <div class="text-center">
-            <h1 class="font-weight-light">Activities</h1>
-          </div>
-          <v-slide-group
-            v-model="model"
-            class="pa-2"
-            active-class="success"
-            show-arrows
-          >
-            <v-slide-item v-for="(n, index) in model" :key="index">
-              <div class="ma-md-5 mx-md-15">
-                <activity-card
-                  class="ma-md-5 mx-md-1"
-                  :description="n.data.description"
-                  :cost="n.data.cost"
-                  :activityName="n.data.name"
-                  :eventStart="n.data.eventDateStart"
-                  :eventEnd="n.data.eventDateEnd"
-                  :categories="n.data.categories"
-                  :ageGroup="n.data.ageGroup"
-                  :isProfileCard="isCitizen"
-                  :isVenderCard="isVender"
-                  :isAdminCard="isAdmin"
-                  :id="n.id"
-                  :purchasedBy="n.data.purchasedBy"
-                  :imageUrl="n.data.imageUrl"
-                />
-              </div>
-            </v-slide-item>
-          </v-slide-group>
-          <div v-if="isAdmin">
-            <div class="text-center">
-              <h1 class="font-weight-light">User Management</h1>
+                    Edit profile picture
+                    <!-- <v-icon>mdi-pencil</v-icon> -->
+                  </v-btn>
+                  <input
+                    type="file"
+                    style="display: none"
+                    ref="fileInput"
+                    accept="image/*"
+                    @change="onFilePicked"
+                  />
+                </div>
+                <div class="text-center">
+                  <h1 class="font-weight-light">{{ name }}</h1>
+                </div>
+                <div class="text-center">
+                  <h2 class="font-weight-light">{{ userType }}</h2>
+                </div>
+                <div
+                  v-if="userType == 'Citizen' || userType == 'ServiceProvider'"
+                >
+                  <h2 class="font-weight-light">Points: {{ points }}</h2>
+                </div>
+                <v-list-item-subtitle v-if="userType == 'Citizen'"
+                  ><a v-on:click="payment()">
+                    <h2 class="font-weight-light">Add points</h2>
+                  </a></v-list-item-subtitle
+                >
+              </v-list-item-content>
+            </v-list-item>
+          </v-row>
+        </v-card>
+      </v-container>
+      <v-sheet class="mx-auto mt-5" max-width="80%">
+        <div class="text-center">
+          <h1 class="font-weight-light">Activities</h1>
+        </div>
+        <v-slide-group
+          v-model="model"
+          class="pa-2"
+          active-class="success"
+          show-arrows
+        >
+          <v-slide-item v-for="(n, index) in model" :key="index">
+            <div class="ma-md-5 mx-md-15">
+              <activity-card
+                class="ma-md-5 mx-md-1"
+                :description="n.data.description"
+                :cost="n.data.cost"
+                :activityName="n.data.name"
+                :eventStart="n.data.eventDateStart"
+                :eventEnd="n.data.eventDateEnd"
+                :categories="n.data.categories"
+                :ageGroup="n.data.ageGroup"
+                :isProfileCard="isCitizen"
+                :isVenderCard="isVender"
+                :isAdminCard="isAdmin"
+                :id="n.id"
+                :purchasedBy="n.data.purchasedBy"
+                :imageUrl="n.data.imageUrl"
+              />
             </div>
-            <v-form v-model="valid">
-              <v-container>
-                <v-row>
-                  <v-col cols="6" md="4">
-                    <v-text-field
-                      v-model="userFormEmail"
-                      :rules="emailRules"
-                      label="E-mail"
-                      required
-                    ></v-text-field>
-                  </v-col>
-                  <!-- :error-messages="selectErrors" -->
-                  <v-col cols="6" md="4">
-                    <v-select
-                      v-model="user_type"
-                      :items="userTypes"
-                      label="User Type"
-                      required
-                      @change="$v.select.$touch()"
-                      @blur="$v.select.$touch()"
-                    >
-                    </v-select>
-                  </v-col>
-
-                  <!-- :error-messages="selectErrors" -->
-                  <v-col cols="6" md="4">
-                    <v-select
-                      v-model="userAction"
-                      :items="userActions"
-                      label="User Type"
-                      required
-                      @change="$v.select.$touch()"
-                      @blur="$v.select.$touch()"
-                    ></v-select>
-                  </v-col>
-
-                  <v-col cols="6" md="4">
-                    <v-btn class="mr-4" type="submit" @click="manageUser"
-                      >Submit</v-btn
-                    >
-                  </v-col>
-                </v-row>
-              </v-container>
-            </v-form>
+          </v-slide-item>
+        </v-slide-group>
+        <div v-if="isAdmin">
+          <div class="text-center">
+            <h1 class="font-weight-light">User Management</h1>
           </div>
-        </v-sheet>
-      </v-main>
-    </v-app>
+          <v-form v-model="valid">
+            <v-container>
+              <v-row>
+                <v-col cols="6" md="4">
+                  <v-text-field
+                    v-model="userFormEmail"
+                    :rules="emailRules"
+                    label="E-mail"
+                    required
+                  ></v-text-field>
+                </v-col>
+                <!-- :error-messages="selectErrors" -->
+                <v-col cols="6" md="4">
+                  <v-select
+                    v-model="user_type"
+                    :items="userTypes"
+                    label="User Type"
+                    required
+                    @change="$v.select.$touch()"
+                    @blur="$v.select.$touch()"
+                  >
+                  </v-select>
+                </v-col>
+
+                <!-- :error-messages="selectErrors" -->
+                <v-col cols="6" md="4">
+                  <v-select
+                    v-model="userAction"
+                    :items="userActions"
+                    label="User Type"
+                    required
+                    @change="$v.select.$touch()"
+                    @blur="$v.select.$touch()"
+                  ></v-select>
+                </v-col>
+
+                <v-col cols="6" md="4">
+                  <v-btn class="mr-4" type="submit" @click="manageUser"
+                    >Submit</v-btn
+                  >
+                </v-col>
+              </v-row>
+            </v-container>
+          </v-form>
+        </div>
+      </v-sheet>
+    </v-container>
   </div>
 </template>
 
@@ -137,6 +166,7 @@ export default {
     return {
       model: null,
       userType: this.$store.state.user.userType,
+      userID: this.$store.state.user.userID,
       isCitizen: false,
       isVender: false,
       isAdmin: false,
@@ -152,14 +182,20 @@ export default {
         (v) => !!v || "E-mail is required",
         (v) => /.+@.+/.test(v) || "E-mail must be valid",
       ],
-      successReset:false,
-      successResetError:false,
+      successReset: false,
+      successResetError: false,
+      profilePicUpload: null,
+      filename: "",
+      imageUrl: this.$store.state.user.profilePic,
     };
   },
   computed: {
     initials() {
       let name = this.$store.state.user.name.split(" ");
       return name[0][0] + name[1][0];
+    },
+    hasProfilePic() {
+      return this.imageUrl != "";
     },
   },
 
@@ -209,7 +245,6 @@ export default {
             .get()
             .then(function (querySnapshot) {
               querySnapshot.forEach(function (doc) {
-                console.log(doc.id, " => ", doc.data());
                 d.push({ id: doc.id, data: doc.data() });
               });
             })
@@ -230,7 +265,6 @@ export default {
           .get()
           .then(function (querySnapshot) {
             querySnapshot.forEach(function (doc) {
-              console.log(doc.id, " => ", doc.data());
               docID = doc.id;
               userData.name = doc.data().name;
               userData.points = doc.data().points;
@@ -251,7 +285,6 @@ export default {
           .get()
           .then(function (querySnapshot) {
             querySnapshot.forEach(function (doc) {
-              console.log(doc.id, " => ", doc.data());
               d.push({ id: doc.id, data: doc.data() });
             });
           })
@@ -306,7 +339,6 @@ export default {
           .get()
           .then(function (querySnapshot) {
             querySnapshot.forEach(function (doc) {
-              console.log({ id: doc.id, data: doc.data() });
               doc.ref.update({
                 locked: true,
               });
@@ -324,7 +356,6 @@ export default {
           .get()
           .then(function (querySnapshot) {
             querySnapshot.forEach(function (doc) {
-              console.log({ id: doc.id, data: doc.data() });
               doc.ref.delete();
             });
           })
@@ -334,6 +365,66 @@ export default {
       } else if (this.userAction == "Reset Password") {
         this.resetPassword();
       }
+    },
+    onPickFile() {
+      this.$refs.fileInput.click();
+    },
+    onFilePicked(event) {
+      const db = firebase.firestore();
+
+      const files = event.target.files;
+      this.filename = files[0].name;
+      if (this.filename.lastIndexOf(".") <= 0) {
+        return alert("Please add a valid file!");
+      }
+      const fileReader = new FileReader();
+      fileReader.addEventListener("load", () => {
+        this.imageUrl = fileReader.result;
+      });
+      fileReader.readAsDataURL(files[0]);
+      this.profilePicUpload = files[0];
+
+      let collectionName;
+      let key;
+      if (this.$store.state.user.userType == "Citizen") {
+        collectionName = "Citizens";
+      } else if (this.$store.state.user.userType == "ServiceProvider") {
+        collectionName = "ServiceProviders";
+      } else if (this.$store.state.user.userType == "Admin") {
+        collectionName = "Admins";
+      }
+      db.collection(collectionName)
+        .where("email", "==", this.$store.state.user.email)
+        .get()
+        .then((docRef) => {
+          console.log("Document written with ID: ", docRef.docs[0].id);
+          key = docRef.docs[0].id;
+          return key;
+        })
+        .then((key) => {
+          const ext = this.filename.slice(this.filename.lastIndexOf("."));
+          return firebase
+            .storage()
+            .ref("profileImages/" + key + ext)
+            .put(this.profilePicUpload);
+        })
+        .then((boob) => {
+          const ext = this.filename.slice(this.filename.lastIndexOf("."));
+          return firebase
+            .storage()
+            .ref()
+            .child("profileImages/" + key + ext)
+            .getDownloadURL();
+        })
+        .then((fileData) => {
+          this.imageUrl = fileData;
+          this.$store.commit("setProfilePic", this.imageUrl);
+          return db
+            .collection(collectionName)
+            .doc(key)
+            .update({ profilePic: this.imageUrl });
+        });
+
     },
   },
 };

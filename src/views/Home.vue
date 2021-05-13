@@ -7,14 +7,18 @@
     </v-container>
 
     <v-app id="inspire">
-      <v-app-bar app color="white" flat>
+      <v-app-bar app color="white" flat >
         <v-container class="py-0 fill-height">
-          <!-- <v-avatar class="mr-10" color="green darken-1" size="32"
-            ><span class="white--text headline">{{ initials }}</span></v-avatar
-          > -->
+          <div v-if="pfp">
+          <v-avatar>
+            <img :src="pfp"  height="100" alt="profile pic" />
+          </v-avatar>
+          </div>
+          <div v-else>
           <v-avatar color="orange">
             <v-icon dark> mdi-account-circle </v-icon>
           </v-avatar>
+          </div>
 
           <v-btn v-for="link in links" :key="link" text @click="leave(link)">
             {{ link }}
@@ -173,7 +177,7 @@ export default {
         page: 1,
         perPage: 8,
       },
-
+      pfp: this.$store.state.user.profilePic,
     };
   },
   async created() {
@@ -206,15 +210,9 @@ export default {
         this.pagination.page * this.pagination.perPage
       );
     },
-    initials() {
-      if (this.$store.state.user.name) {
-        let name = this.$store.state.user.name.split(" ");
-        return name[0][0] + name[1][0];
-        // return "A";
-      } else {
-        return "@";
-      }
-    },
+    hasProfilePic() {
+      return this.pfp=="";
+    }
   },
 
   methods: {
