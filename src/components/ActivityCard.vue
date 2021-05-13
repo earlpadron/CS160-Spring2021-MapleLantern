@@ -14,6 +14,11 @@
         src="https://cdn.vuetifyjs.com/images/cards/sunshine.jpg"
         height="200px"
       ></v-img>
+  <v-card class="mx-auto" max-width="344">
+    <v-img
+      :src= imageUrl
+      height="200px"
+    ></v-img>
 
       <v-card-title> {{ activityName }} </v-card-title>
       <v-card-text> Cost:{{ cost }} points </v-card-text>
@@ -111,7 +116,11 @@ export default {
     isAdminCard: Boolean,
     address: String,
     id: String,
+<<<<<<< HEAD
     purchasedBy: Number,
+=======
+    imageUrl: String,
+>>>>>>> 83dc0d4cc24a51f41291bd66d6288a1a03055373
   },
   methods: {
     leave: function () {

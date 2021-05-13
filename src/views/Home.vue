@@ -117,6 +117,7 @@
                       :isActivityCard="true"
                       :address="n.data.address"
                       :categories="n.data.categories"
+                      :imageUrl="n.data.imageUrl"
                     />
                   </v-col>
                 </v-row>
