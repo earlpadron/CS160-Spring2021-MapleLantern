@@ -109,25 +109,20 @@ use this package: https://stackoverflow.com/questions/58228404/implement-datetim
             hide-details
             type="number"
           />
+          
+          <v-row class="ma-4 mt-8">
+            <v-btn raised @click="onPickFile"> Upload Image </v-btn>
+            <input 
+              type="file" 
+              style="display: none" 
+              ref="fileInput" 
+              accept="image/*"
+              @change="onFilePicked">
 
-          <v-btn raised @click="onPickFile"> Upload Image </v-btn>
-          <input 
-            type="file" 
-            style="display: none" 
-            ref="fileInput" 
-            accept="image/*"
-            @change="onFilePicked">
-
-          <v-file-input
-            v-model="Upload"
-            label="Upload an image"
-            required
-          ></v-file-input>
-
-          <v-flex xs12 sm6 offset-sm3>
-            <img :src="imageUrl" height="150">
-          </v-flex>
-
+            <v-flex xs12 sm6 offset-sm3>
+              <img :src="imageUrl" height="150">
+            </v-flex>
+          </v-row>
 
           <v-btn color="success" class="mr-4" @click="post()">
             <!-- :disabled="!valid" -->
@@ -233,7 +228,7 @@ export default {
         .then(key => {
           // console.log("Document written with ID: ", key);
           const ext = this.filename.slice(this.filename.lastIndexOf('.'))
-          console.log("ext: ", ext);
+          // console.log("ext: ", ext);
           return firebase.storage().ref('postImages/' + key + ext).put(this.Upload)
         })
         .then(boob => {
@@ -243,10 +238,9 @@ export default {
         .then(fileData => {
           // const ext = this.filename.slice(this.filename.lastIndexOf('.'))
           this.imageUrl = fileData//firebase.storage().ref().child('postImages/' + key + ext).getDownloadURL() //fileData.metadata.getDownloadURL()
-          console.log("firebase.storage().ref().child('postImages/' + key + ext): ", fileData);
+          // console.log("firebase.storage().ref().child('postImages/' + key + ext): ", fileData);
           
-          // downloadURLs[0]
-          console.log("this.imageUrl: ", this.imageUrl);
+          // console.log("this.imageUrl: ", this.imageUrl);
           return db.collection("Activities").doc(key).update({imageUrl: this.imageUrl})
         })
         .then(() => {
