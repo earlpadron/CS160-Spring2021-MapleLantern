@@ -66,6 +66,7 @@
                   :isAdminCard="isAdmin"
                   :id="n.id"
                   :purchasedBy="n.data.purchasedBy"
+                  :imageUrl="n.data.imageUrl"
                 />
               </div>
             </v-slide-item>
