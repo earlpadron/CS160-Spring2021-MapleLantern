@@ -5,36 +5,28 @@
         <v-container>
           <v-spacer></v-spacer>
           <v-card class="mx-auto" max-width="85%">
-            <!-- <v-img
-              height="200"
-              src="https://cdn.vuetifyjs.com/images/cards/server-room.jpg"
-            ></v-img> -->
-            <v-container></v-container>
             <v-row>
-              <!-- Style for the v-row -->
-              <!-- style="margin: 2.5%; position: absolute; top: 130px"> -->
               <v-list-item>
-                <v-list-item-avatar size="100">
-                  <!-- <v-avatar class="ma-md-15 mx-md-15" color="red" size="164">
-                    <span class="white--text headline">{{ initials }}</span>
-                  </v-avatar> -->
-                  <v-avatar color="orange" size="164">
+                <v-list-item-content>
+                  <v-avatar color="orange" size="150">
                     <v-icon dark> mdi-account-circle </v-icon>
                   </v-avatar>
-                </v-list-item-avatar>
-                <v-list-item-content>
-                  <v-list-item-title class="title" style="margin-top: 10px">{{
-                    name
-                  }}</v-list-item-title>
-                  <v-list-item-subtitle
+                  <div class="text-center">
+                    <h1 class="font-weight-light">{{ name }}</h1>
+                  </div>
+                  <div class="text-center">
+                    <h2 class="font-weight-light">{{ userType }}</h2>
+                  </div>
+                  <div
                     v-if="
-                      userType == 'Citizen' || userType == 'Service Provider'
+                      userType == 'Citizen' || userType == 'ServiceProvider'
                     "
-                    >Points: {{ points }}</v-list-item-subtitle
                   >
+                    <h2 class="font-weight-light">Points: {{ points }}</h2>
+                  </div>
                   <v-list-item-subtitle v-if="userType == 'Citizen'"
                     ><a v-on:click="payment()">
-                      Add points
+                      <h2 class="font-weight-light">Add points</h2>
                     </a></v-list-item-subtitle
                   >
                 </v-list-item-content>
@@ -339,4 +331,9 @@ export default {
 </script>
 
 <style scoped>
+.v-list-item__content {
+  justify-content: center;
+  text-align: center;
+  display: grid;
+}
 </style>
