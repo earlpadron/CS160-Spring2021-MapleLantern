@@ -7,8 +7,6 @@ import SignUp from './views/SignUp.vue';
 import Home from './views/Home.vue';
 import Post from './views/Post.vue';
 import Contact from './views/Contact.vue';
-import Settings from './views/Settings.vue';
-import Schedule from './views/Schedule.vue';
 import Profile from './views/Profile.vue';
 import Payment from './views/Payment.vue';
 import AddPoints from './views/AddPoints.vue';
@@ -56,22 +54,6 @@ const router = new Router({
             path: '/contact',
             name: 'Contact',
             component: Contact
-        },
-        {
-            path: '/settings',
-            name: 'Settings',
-            component: Settings,
-            meta: {
-                requiresAuth: true
-            }
-        },
-        {
-            path: '/schedule',
-            name: 'Schedule',
-            component: Schedule,
-            meta: {
-                requiresAuth: true
-            }
         },
         {
             path: '/profile',
