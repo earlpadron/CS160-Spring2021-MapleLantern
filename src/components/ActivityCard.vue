@@ -116,11 +116,8 @@ export default {
     isAdminCard: Boolean,
     address: String,
     id: String,
-<<<<<<< HEAD
     purchasedBy: Number,
-=======
     imageUrl: String,
->>>>>>> 83dc0d4cc24a51f41291bd66d6288a1a03055373
   },
   methods: {
     leave: function () {
