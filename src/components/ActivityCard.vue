@@ -135,7 +135,9 @@ export default {
         .where("name", "==", this.activityName)
         .get();
       const activityDocID = data.docs[0].id;
-      const activityRef = "/Activities/" + activityDocID;
+      let activityRef = "/Activities/" + activityDocID;
+      console.log("actref");
+      console.log(activityRef);
 
       let prov = "";
       await db
