@@ -1,7 +1,7 @@
 <template>
   <v-card class="mx-auto" max-width="344">
     <v-img
-      src="https://cdn.vuetifyjs.com/images/cards/sunshine.jpg"
+      src= imageUrl
       height="200px"
     ></v-img>
 
@@ -83,6 +83,7 @@ export default {
     isAdminCard: Boolean,
     address: String,
     id: String,
+    imageUrl: String,
   },
   methods: {
     leave: function () {

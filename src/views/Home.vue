@@ -123,6 +123,7 @@
                       :categories="n.data.category"
                       :isActivityCard="true"
                       :address="n.data.address"
+                      :imageUrl="n.data.imageUrl"
                     />
                   </v-col>
                 </v-row>
