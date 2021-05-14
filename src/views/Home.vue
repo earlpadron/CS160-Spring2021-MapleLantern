@@ -262,6 +262,7 @@ export default {
         await db
           .collection("Activities")
           .where("categories", "array-contains", n)
+          .where("adminApproved", "==", true)
           .get()
           .then(function (querySnapshot) {
             querySnapshot.forEach(function (doc) {
@@ -288,6 +289,7 @@ export default {
         await db
           .collection("Activities")
           .where("ageGroup", "==", n)
+          .where("adminApproved", "==", true)
           .get()
           .then(function (querySnapshot) {
             querySnapshot.forEach(function (doc) {
