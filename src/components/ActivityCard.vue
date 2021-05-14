@@ -151,9 +151,12 @@ export default {
           });
       console.log("provider");
       console.log(prov);
-
+      console.log("points and cost")
+      console.log(this.points);
+      console.log(this.cost);
 
       if (this.points >= this.cost) {
+        console.log("inside");
         var adding = {
           activity: db.doc("/Activities/" + activityDocID),
           datePurchased: Date.now(),
@@ -164,8 +167,14 @@ export default {
             points: this.points - this.cost,
             purchased: firebase.firestore.FieldValue.arrayUnion(adding),
           });
-        this.$store.state.user.points = this.points - this.cost;
-        this.$store.commit("setPoints", this.points - this.cost);
+        this.points = this.points - this.cost;
+        //this.$store.state.user.points = this.points;
+        this.$store.commit("setPoints", this.points);
+
+        console.log("check here");
+        console.log(this.points);
+        console.log(this.$store.state.user.points);
+
 
         var providerRef = db.doc(prov);
         // Atomically increment the provider's points by cost.
@@ -180,9 +189,13 @@ export default {
         });
 
         this.success = true;
+        console.log("new points")
+        console.log(this.points);
       } else {
         this.snackbar = true;
       }
+      console.log("new points out")
+      console.log(this.points);
     },
     approve: async function () {
       console.log(this.$props.id);
