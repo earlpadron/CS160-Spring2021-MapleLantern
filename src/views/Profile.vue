@@ -114,6 +114,16 @@
           <v-form v-model="valid">
             <v-container>
               <v-row>
+              <v-col cols="6" md="4">
+                    <v-btn 
+                    v-on:click="createUser" 
+                    color="orange">
+                    Create New User
+                    </v-btn>
+                  </v-col>
+              </v-row>
+
+              <v-row>
                 <v-col cols="6" md="4">
                   <v-text-field
                     v-model="userFormEmail"
@@ -122,6 +132,9 @@
                     required
                   ></v-text-field>
                 </v-col>
+              </v-row>
+
+              <v-row>
                 <!-- :error-messages="selectErrors" -->
                 <v-col cols="6" md="4">
                   <v-select
@@ -134,25 +147,34 @@
                   >
                   </v-select>
                 </v-col>
+              </v-row>
 
                 <!-- :error-messages="selectErrors" -->
+              <v-row>
                 <v-col cols="6" md="4">
                   <v-select
                     v-model="userAction"
                     :items="userActions"
-                    label="User Type"
+                    label="Administrator Action"
                     required
                     @change="$v.select.$touch()"
                     @blur="$v.select.$touch()"
                   ></v-select>
                 </v-col>
-
-                <v-col cols="6" md="4">
-                  <v-btn class="mr-4" type="submit" @click="manageUser"
-                    >Submit</v-btn
-                  >
-                </v-col>
               </v-row>
+              
+              
+                <v-col cols="6" md="4">
+                    <v-btn 
+                    class="mr-4" 
+                    type="submit"      
+                    color = "orange"
+                    @click="manageUser"
+                      >Submit</v-btn
+                    >
+                </v-col>
+                          
+             
             </v-container>
           </v-form>
         </div>
@@ -181,7 +203,7 @@ export default {
       userFormEmail: "",
       userTypes: ["Citizen", "ServiceProvider"],
       user_type: "",
-      userActions: ["Locked", "Create", "Delete", "Reset Password"],
+      userActions: ["Locked", "Delete", "Reset Password"],
       userAction: "",
       valid: false,
       emailRules: [
@@ -335,6 +357,10 @@ export default {
       this.successResetError = false;
     },
 
+    createUser: async function(){
+      this.$router.replace("/sign-up");
+    },
+
     manageUser: async function () {
       const db = firebase.firestore();
 
@@ -353,8 +379,6 @@ export default {
           .catch(function (error) {
             console.log("Error getting documents: ", error);
           });
-      } else if (this.userAction == "Create") {
-        this.$router.replace("/sign-up");
       } else if (this.userAction == "Delete") {
         await db
           .collection(this.user_type + "s")
