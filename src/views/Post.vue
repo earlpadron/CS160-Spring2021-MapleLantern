@@ -226,9 +226,7 @@ export default {
           return key
         })
         .then(key => {
-          // console.log("Document written with ID: ", key);
           const ext = this.filename.slice(this.filename.lastIndexOf('.'))
-          // console.log("ext: ", ext);
           return firebase.storage().ref('postImages/' + key + ext).put(this.Upload)
         })
         .then(boob => {
@@ -236,11 +234,7 @@ export default {
           return firebase.storage().ref().child('postImages/' + key + ext).getDownloadURL()
         })
         .then(fileData => {
-          // const ext = this.filename.slice(this.filename.lastIndexOf('.'))
-          this.imageUrl = fileData//firebase.storage().ref().child('postImages/' + key + ext).getDownloadURL() //fileData.metadata.getDownloadURL()
-          // console.log("firebase.storage().ref().child('postImages/' + key + ext): ", fileData);
-          
-          // console.log("this.imageUrl: ", this.imageUrl);
+          this.imageUrl = fileData
           return db.collection("Activities").doc(key).update({imageUrl: this.imageUrl})
         })
         .then(() => {
