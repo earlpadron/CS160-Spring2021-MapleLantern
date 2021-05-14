@@ -218,7 +218,6 @@ export default {
           address: this.Location,
           description: this.Description,
           purchasedBy: 0,
-          // image: this.Upload,
         })
         .then((docRef) => {
           console.log("Document written with ID: ", docRef.id);
