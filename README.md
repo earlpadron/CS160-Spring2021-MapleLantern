@@ -8,7 +8,7 @@ Xinru: Set up a connection to a database that stores usernames and passwords for
 
 
 ## Website link
-https://main.defc1d409fxc9.amplifyapp.com/
+https://newmain.d3rv83cop9gegu.amplifyapp.com/#/home
 
 # vueapp
 
